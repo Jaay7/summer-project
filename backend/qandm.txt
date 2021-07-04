@@ -1,0 +1,183 @@
+mutation RegisterUser {
+  register(
+    name: "asdfghj"
+    email: "asdfg@gmail.com"
+    password: "Dalll@1234"
+    username: "jhvjhv"
+  ) {
+    user {
+      id
+      name
+      email
+      username
+    }
+    token
+    refreshToken
+  }
+}
+
+mutation LoginUser {
+  login(username: "asdf", password: "Dalll@1234") {
+    user {
+      id
+      name
+      username
+      email
+    }
+    token
+    refreshToken
+  }
+}
+
+query UserProfile {
+  profile {
+    id
+    name
+    email
+    username
+  }
+}
+
+query UserList {
+  users {
+    email
+    name
+    username
+    id
+  }
+}
+
+query OtherUser {
+  otherUser(username: "asdf") {
+    name
+    username
+    id
+    email
+  }
+}
+
+query SearchUser {
+  searchUser(letter: "f") {
+    name
+    username
+    email
+    id
+  }
+}
+
+mutation SendMessage {
+  sendMessage(currentUser: "asdfygv", otherUser: "asdf", message: "fineeee") {
+    currentUser
+    otherUser
+    message
+    isSeen
+  }
+}
+
+query RetrieveMessages {
+  retrieveMessages(currentUser: "plmnkoi", otherUser: "asdf") {
+    currentUser
+    otherUser
+    message
+    isSeen
+    createdAt
+  }
+}
+
+query RetrieveChats {
+  retrieveChats(currentUser: "asdf") {
+    currentUser
+    otherUser
+    message
+    isSeen
+    createdAt
+  }
+}
+
+mutation CreateGroup {
+  createGroup(createdBy: "plmnkoi", persons: ["asdf", "asdfghjk"]) {
+    id
+    groupName
+    persons
+    createdBy
+    chats {
+      sender
+      message
+      date
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation AddPerosn {
+  addPerson(
+    id: "60cf8da76e2b9a279c6ddb1f"
+    currentUser: "asdf"
+    persons: ["asdfghjk"]
+  ) {
+    id
+    groupName
+    persons
+    createdBy
+    chats {
+      sender
+      message
+      date
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation SendGroupMessage {
+  sendGroupMessage(
+    id: "60cf93753c2c052f74fa99f4"
+    sender: "asdfghjk"
+    message: "hell00oo"
+  ) {
+    id
+    persons
+    groupName
+    chats {
+      sender
+      message
+      date
+    }
+    createdBy
+    createdAt
+    updatedAt
+  }
+}
+
+query RetrieveGroups {
+  retrieveGroups(currentUser: "asdf") {
+    id
+    groupName
+    persons
+    chats {
+      sender
+      message
+      date
+    }
+    createdBy
+    createdAt
+    updatedAt
+  }
+}
+
+query RetrieveGroupMessages {
+  retrieveGroupMessages(id: "60cf93753c2c052f74fa99f4") {
+    id
+    persons
+    groupName
+    chats {
+      sender
+      message
+      date
+    }
+    createdBy
+    createdAt
+    updatedAt
+  }
+}
