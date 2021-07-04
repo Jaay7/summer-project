@@ -1,6 +1,6 @@
 # summer-project
 
-A basic chat app developed using MERN stack along with GrqphQL and Apollo.
+A basic chat app developed using MERN stack along with GraphQL and Apollo.
 
 ## To run this project
 
