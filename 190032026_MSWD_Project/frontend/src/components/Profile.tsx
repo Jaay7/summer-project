@@ -82,15 +82,15 @@ const Profile: React.FC = () => {
         ) : (
           <Grid container spacing={0}>
             <Grid item xs={3}>
-              <div>
+              {/* <div>
               <Avatar src={`${data.profile.profilePic}`} alt={data.profile.username} style={{height: 150, width: 150, borderRadius: "50%", objectFit: "cover"}} />
-              </div>
+              </div> */}
             </Grid>
             <Grid item xs={6}>
               <div>
-                <Typography>{data.profile.name}</Typography>
-                <Typography>{data.profile.username}</Typography>
-                <Typography>{data.profile.email}</Typography>
+                <Typography>Name: {data.profile.name}</Typography>
+                <Typography>Username: {data.profile.username}</Typography>
+                <Typography>Email: {data.profile.email}</Typography>
               </div>
             </Grid>
           <Grid item xs={3}></Grid>
