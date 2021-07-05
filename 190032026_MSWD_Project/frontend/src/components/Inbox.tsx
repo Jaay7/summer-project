@@ -392,7 +392,7 @@ const SearchUsers = (props: any) => {
         
         </>
       )}
-      <div style={{marginTop: 40, alignSelf: 'flex-end'}}>
+      <div style={{bottom: 10, alignSelf: 'flex-end', position: "absolute"}}>
         <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
