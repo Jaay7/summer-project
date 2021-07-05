@@ -32,7 +32,7 @@ APP_REFRESH_SECRET = <APP_REFRESH_SECRET>
 
 `npm start`
 
-Open http://localhost:4000/grqphql to view it in the browser. It will open the graphql playground.
+Open http://localhost:4000/graphql to view it in the browser. It will open the graphql playground.
 
 - For Frontend:
 
