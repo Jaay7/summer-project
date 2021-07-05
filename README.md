@@ -36,7 +36,7 @@ Open http://localhost:4000/graphql to view it in the browser. It will open the g
 
 - For Frontend:
 
-1. First navigate to the backend directory:
+1. First navigate to the frontend directory:
 
 `cd frontend`
 
