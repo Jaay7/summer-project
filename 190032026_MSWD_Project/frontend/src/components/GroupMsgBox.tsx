@@ -295,7 +295,12 @@ const Transition = React.forwardRef(function Transition(
     const changeGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
       setGroupName(event.target.value);
     }
-    if (loading) return <CircularProgress />
+    if (loading) return <>
+    <Header />
+    <div style={{height: '79vh', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
+      <CircularProgress  size="30px" style={{color: '#0277BD'}} />
+    </div>
+    </>
     if (error) return <Redirect to="/login" />
     return (
       <div className={classes.root}>
@@ -534,6 +539,7 @@ interface abc {
 
 const SearchUsers = (props: any) => {
 
+  let currentUser = localStorage.getItem("user")
   const { loading, error, data} = useQuery(SEARCH_USERS, {
     variables: { letter: props.search }
   })
@@ -581,7 +587,7 @@ const SearchUsers = (props: any) => {
         <>
         <br />
         <div style={{height: 220,overflowY: 'auto'}}>
-        {data.searchUser.map((index: any) => (
+        {data.searchUser.filter((idx: any) => idx.username !== currentUser).map((index: any) => (
           <ListItem className={props.classes.searchList} onClick={() => handleSelect(index.username)} key={index.username}>
             <Avatar>{index.username.charAt(0).toUpperCase()}</Avatar>
             <Typography style={{marginLeft: 15}}>{index.username}</Typography>

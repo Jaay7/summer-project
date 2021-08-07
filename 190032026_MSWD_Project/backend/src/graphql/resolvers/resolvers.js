@@ -258,7 +258,7 @@ export const resolvers = {
         if (!await User.findOne({username: args.currentUser}) && !await User.findOne({username: args.otherUser})) {
           throw new Error("users doesn't exist")
         }
-        let message = await Chat.updateMany({
+        await Chat.updateMany({
           $and: [
             {currentUser: args.otherUser},
             {otherUser: args.currentUser}
@@ -270,7 +270,26 @@ export const resolvers = {
           }
         }, { multi: true}
         );
-        return message
+        return {message: `${args.currentUser} saw the messages`}
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    removeFromGroup: async(root, args, {req}, info) => {
+      try {
+        let group = Groups.findById(args.id)
+        if(!group) {
+          throw new Error("Group doesn't exist")
+        }
+        await Groups.updateOne(
+          {_id: args.id},
+          {
+            $pull: {
+              persons: args.persons
+            }
+          }
+        )
+        return group
       } catch (error) {
         console.log(error)
       }

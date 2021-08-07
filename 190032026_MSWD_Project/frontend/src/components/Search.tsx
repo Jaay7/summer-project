@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Header from './Header'
 import { useQuery, gql } from '@apollo/client';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { InputBase, InputAdornment, ListItem, Avatar, Paper, Grid, Button, Typography, CircularProgress, Card } from '@material-ui/core';
+import { InputBase, InputAdornment, Avatar, Grid, Button, Typography, CircularProgress, Card } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search'
 import searchImg from '../images/searchImg.svg'
 import noData from '../images/noData.svg'
@@ -78,6 +78,7 @@ const Search: React.FC = () => {
   const { loading, error, data} = useQuery(SEARCH_USERS, {
     variables: { letter: search }
   })
+  let currentUser = localStorage.getItem("user")
 
   const changeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -108,7 +109,7 @@ const Search: React.FC = () => {
       <br></br>
       {loading ? (
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <CircularProgress />
+          <CircularProgress size="30px" style={{color: '#0277BD'}}  />
         </div>
       ): error ? (
         <>{error.message}</>
@@ -127,7 +128,7 @@ const Search: React.FC = () => {
         <Grid container spacing={0}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8} className={classes.content}>
-            {data.searchUser.map((index: any) => (
+            {data.searchUser.filter((idx: any) => idx.username !== currentUser).map((index: any) => (
               <div key={index.username}>
                 <Card variant="outlined" className={classes.itemss}>
                   <Avatar style={{height: 60, width: 60}}>{index.username.charAt(0).toUpperCase()}</Avatar>

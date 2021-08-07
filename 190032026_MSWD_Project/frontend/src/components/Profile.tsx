@@ -74,8 +74,8 @@ const Profile: React.FC = () => {
     <div className={classes.root}>
       <Header />
       {loading ? (
-        <div style={{display: 'flex', justifyContent: 'center', height: '89vh'}}>
-          <CircularProgress />
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '89vh'}}>
+          <CircularProgress size="30px" style={{color: '#0277BD'}} />
         </div>
         ) : error ? (
           <><p>{error.message}</p><Redirect to="/login" /></>

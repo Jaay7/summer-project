@@ -325,6 +325,7 @@ const CREATE_GROUP = gql`
 
 const SearchUsers = (props: any) => {
 
+  let currentUser = localStorage.getItem("user")
   const { loading, error, data} = useQuery(SEARCH_USERS, {
     variables: { letter: props.search }
   })
@@ -373,7 +374,7 @@ const SearchUsers = (props: any) => {
         <br />
         <div style={{height: 260,overflowY: 'auto'}}>
           <List>
-          {data.searchUser.map((index: any) => (
+          {data.searchUser.filter((idx: any) => idx.username !== currentUser).map((index: any) => (
             <ListItem className={props.classes.searchList} key={index.username}>
               <ListItemAvatar>
                 <Avatar style={{backgroundColor: 'orange'}}>{index.username.charAt(0).toUpperCase()}</Avatar>
@@ -417,7 +418,9 @@ const Chats: React.FC = () => {
   return(
     <div>
     { loading ? (
-        <CircularProgress />
+        <div style={{minHeight: "79vh", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <CircularProgress size="30px" style={{color: '#AED581'}} />
+        </div>
       ) : 
       error ? (
         <p>{error.message}<Redirect to="/login" /></p>
@@ -470,7 +473,9 @@ const Groups: React.FC = () => {
   return(
     <div>
     { loading ? (
-        <CircularProgress />
+      <div style={{minHeight: "79vh", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <CircularProgress size="30px" style={{color: '#AED581'}}  />
+      </div>
       ) : 
       error ? (
         <p>{error.message}<Redirect to="/login" /></p>

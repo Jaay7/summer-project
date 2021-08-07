@@ -91,7 +91,12 @@ export const typeDefs = gql`
       currentUser: String!
       otherUser: String!
       isSeen: Boolean!
-    ): [Chat!]!
+    ): String
+    removeFromGroup(
+      id: ID!
+      admin: String!
+      persons: [String!]!
+    ): GroupChat!
   }
 `;
 

@@ -42,9 +42,10 @@ const StyledTabs = withStyles({
     justifyContent: 'center',
     backgroundColor: 'transparent',
     '& > span': {
-      maxWidth: 40,
+      minWidth: 440,
       width: '100%',
-      backgroundColor: '#635ee7',
+      backgroundColor: '#FF572240',
+      zIndex: 0
     },
   },
 })((props: StyledTabsProps) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
@@ -58,6 +59,7 @@ const StyledTab = withStyles((theme: Theme) =>
     root: {
       textTransform: 'none',
       minWidth: "200px",
+      zIndex: 1,
       color: theme.palette.text.primary,
       fontWeight: theme.typography.fontWeightRegular,
       fontSize: theme.typography.pxToRem(15),
@@ -118,6 +120,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tabs: {
       borderRight: `1px solid ${theme.palette.divider}`,
+      minHeight: '70vh',
+      // backgroundColor: '#f1f1f1',
+      paddingTop: 40
     },
     main: {
       flexGrow: 1,
@@ -257,7 +262,6 @@ const Settings: React.FC<dark> = ({onToggleDark}) => {
       <Grid container>
         <Grid item xs={2}></Grid>
         <div className={classes.main}>
-          <br />
         <div className={classes.container}>
           <StyledTabs
             orientation="vertical"
