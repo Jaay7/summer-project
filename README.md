@@ -50,4 +50,4 @@ Open http://localhost:4000/graphql to view it in the browser. It will open the g
 
 Open http://localhost:3001 to view it in the browser.
 
-[For more info about frontend ](frontend/README.md)
+[For more info about frontend ](190032026_MSWD_Project/frontend/README.md)
