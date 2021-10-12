@@ -1,10 +1,9 @@
 import React from 'react'
-import { Link, Redirect, useHistory } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import Header from './Header';
-import {CircularProgress, Grid, Button, AccordionActions, Accordion, AccordionDetails, AccordionSummary, Typography, Avatar} from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {CircularProgress, Grid, Typography} from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,11 +53,11 @@ const USER_DATA = gql`
 
 const Profile: React.FC = () => {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState<string | false>(false);
+  // const [expanded, setExpanded] = React.useState<string | false>(false);
 
-  const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  // const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+  //   setExpanded(isExpanded ? panel : false);
+  // };
 
   const { loading, error, data } = useQuery(USER_DATA, {
     context: {

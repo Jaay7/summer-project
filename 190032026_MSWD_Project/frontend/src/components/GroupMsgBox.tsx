@@ -1,16 +1,16 @@
 import React, {useState} from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
-import {Redirect, useParams} from 'react-router-dom'
+import {Redirect, useParams, useHistory} from 'react-router-dom'
 import { 
   Grid, Snackbar, Button, Chip, List,
   ListItem, ListItemSecondaryAction, 
   ListItemText, Typography, IconButton, 
   InputBase, InputAdornment, Slide,
-  Dialog, DialogActions, DialogContent, 
+  Dialog, DialogContent, 
   DialogContentText, DialogTitle, Input, 
   Avatar, useMediaQuery, Drawer, Divider,
-  TextField
+  TextField, ListItemAvatar
 } from '@material-ui/core'
 import Header from './Header'
 import {CircularProgress} from '@material-ui/core'
@@ -18,11 +18,12 @@ import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfie
 import { Picker } from 'emoji-mart';
 import "emoji-mart/css/emoji-mart.css"
 import { TransitionProps } from '@material-ui/core/transitions';
-import EditAttributesOutlinedIcon from '@material-ui/icons/EditAttributesOutlined';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import { KeyboardArrowLeftRounded } from '@material-ui/icons';
+import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -112,6 +113,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute', 
       bottom: 0, 
       color: '#F93A3A',
+      textTransform: 'capitalize',
       cursor: 'pointer',
       '&:hover': {
         // backgroundColor: 'rgba(249, 58, 58, 0.62)',
@@ -169,6 +171,12 @@ const EDIT_GNAME = gql`
   }
 `;
 
+const DELETE_GROUP = gql`
+  mutation DeleteGroup($id: ID!, $admin: String!) {
+    deleteGroup(id: $id, admin: $admin)
+  }
+`
+
 interface parm {
   id: any;
 }
@@ -194,11 +202,14 @@ const Transition = React.forwardRef(function Transition(
   });
   
   const GroupMsgBox = (props: any) => {
+    const history = useHistory()
     const classes = useStyles()
-    const matches = useMediaQuery('(min-width:780px)');
+    const theme = useTheme();
+    const matches = useMediaQuery('(min-width:920px)');
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [ search, setSearch ] = useState('')
+    const [snackMessage, setSnackMessage] = useState('');
     const [state, setState] = React.useState<{
       open: boolean;
       Transition: React.ComponentType<TransitionProps & { children?: React.ReactElement<any, any> }>;
@@ -262,9 +273,23 @@ const Transition = React.forwardRef(function Transition(
         variables: {id: id, sender: currentUser, message: message}
       })
     } else {
+      setSnackMessage('cannot send empty message');
       setState({open: true, Transition: SlideTransition})
     }
     setMessage('')
+  }
+
+  const [deleteGroup] = useMutation(DELETE_GROUP)
+
+  const onDelete = async() => {
+    const response = await deleteGroup({
+      variables: {id: id, admin: currentUser}
+    })
+    if(response) {
+      setSnackMessage(response.data?.deleteGroup);
+      setState({open: true, Transition: SlideTransition});
+      history.goBack();
+    }
   }
   
   const [editGroupName] = useMutation(EDIT_GNAME)
@@ -277,7 +302,6 @@ const Transition = React.forwardRef(function Transition(
     }
     setGroupName('')
   }
-  const theme = useTheme();
   
   let emojiPicker;
   if(emojiPickerState) {
@@ -291,6 +315,14 @@ const Transition = React.forwardRef(function Transition(
       />
       )
     }
+
+    const handleKeyDown = (event: any) => {
+      if(event.key === 'Enter') {
+        console.log('enter is working...');
+        onSend();
+      }
+    }
+    
     const [ groupName, setGroupName ] = React.useState('')
     const changeGroupName = (event: React.ChangeEvent<HTMLInputElement>) => {
       setGroupName(event.target.value);
@@ -307,10 +339,13 @@ const Transition = React.forwardRef(function Transition(
       <Header />
       <Grid container spacing={0} style={{display: 'flex', justifyContent: 'center'}}>
         <Grid item></Grid>
-        <Grid item xs={matches !== true ? 12 : 6}>
+        <Grid item xs={matches !== true ? 12 : 7}>
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <Typography variant="h6" color="textPrimary">{data.retrieveGroupMessages.groupName}</Typography>
+              <IconButton onClick={() => history.goBack()} style={{color: '#fff', padding: 8}}>
+                <KeyboardArrowLeftRounded />
+              </IconButton>
+              <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{data.retrieveGroupMessages.groupName}</Typography>
               <span style={{flexGrow: 1}}></span>
               {/* <IconButton onClick={handleDialogOpen}>
                 <EditAttributesOutlinedIcon />
@@ -355,6 +390,7 @@ const Transition = React.forwardRef(function Transition(
               fullWidth
               autoFocus
               value={message}
+              onKeyDown={handleKeyDown}
               endAdornment={
                 <InputAdornment position="end">
                   <SentimentSatisfiedOutlinedIcon
@@ -441,9 +477,9 @@ const Transition = React.forwardRef(function Transition(
             <div className={classes.leave}>
               <Typography>Leave Group</Typography>
             </div> :
-            <div className={classes.leave}>
+            <Button className={classes.leave} onClick={onDelete}>
               <Typography>Delete Group</Typography>
-            </div>
+            </Button>
         }
         
         </div>
@@ -454,7 +490,7 @@ const Transition = React.forwardRef(function Transition(
         onClose={handleClose}
         autoHideDuration={2500}
         TransitionComponent={state.Transition}
-        message="Can't send empty message"
+        message={snackMessage}
         key={state.Transition.name}
       />
       <Dialog
@@ -467,7 +503,7 @@ const Transition = React.forwardRef(function Transition(
         aria-labelledby="alert-dialog-slide-title"
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle id="alert-dialog-slide-title">{"Group info"}</DialogTitle>
+        <DialogTitle id="alert-dialog-slide-title">{"Add new members"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             Add new people into the group chat.
@@ -483,6 +519,7 @@ const Transition = React.forwardRef(function Transition(
             search={search}
             classes={classes}
             currentUser={currentUser}
+            groupData={data}
             id={id}
             handleDialogClose={handleDialogClose}
             handleDialogCancel={handleDialogCancel}
@@ -533,9 +570,6 @@ const ADD_PERSONS = gql`
   }
 `;
 
-interface abc {
-  name: string;
-}
 
 const SearchUsers = (props: any) => {
 
@@ -588,9 +622,19 @@ const SearchUsers = (props: any) => {
         <br />
         <div style={{height: 220,overflowY: 'auto'}}>
         {data.searchUser.filter((idx: any) => idx.username !== currentUser).map((index: any) => (
-          <ListItem className={props.classes.searchList} onClick={() => handleSelect(index.username)} key={index.username}>
-            <Avatar>{index.username.charAt(0).toUpperCase()}</Avatar>
-            <Typography style={{marginLeft: 15}}>{index.username}</Typography>
+          <ListItem className={props.classes.searchList} key={index.username}>
+            <ListItemAvatar>
+              <Avatar style={{backgroundColor: 'orange'}}>{index.username.charAt(0).toUpperCase()}</Avatar>
+            </ListItemAvatar>
+            <ListItemText id={index.username} primary={index.username}/>
+            <ListItemSecondaryAction onClick={() => handleSelect(index.username)}>
+              {props.groupData.retrieveGroupMessages.persons.includes(index.username) ? <>Added</> : (
+                <IconButton>
+                  <PersonAddOutlinedIcon />
+                </IconButton>
+              )}
+              {/* <Button>Add</Button> */}
+            </ListItemSecondaryAction>
           </ListItem>
         ))}
         </div>

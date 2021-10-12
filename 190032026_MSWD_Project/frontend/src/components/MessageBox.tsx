@@ -1,11 +1,10 @@
 import React, {useState} from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import {Link, Route, Switch, Redirect, useRouteMatch, useParams} from 'react-router-dom'
+import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
+import {Redirect, useParams, useHistory} from 'react-router-dom'
 import { Grid, Snackbar, Button, 
-  Paper, Typography, ListItem,
-  InputBase, InputAdornment, 
-  Slide, useMediaQuery
+  Typography,InputBase, InputAdornment, 
+  Slide, useMediaQuery, IconButton
 } from '@material-ui/core'
 import Header from './Header'
 import {CircularProgress} from '@material-ui/core'
@@ -13,6 +12,7 @@ import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfie
 import { Picker } from 'emoji-mart';
 import "emoji-mart/css/emoji-mart.css"
 import { TransitionProps } from '@material-ui/core/transitions';
+import { KeyboardArrowLeftRounded } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -109,10 +109,6 @@ interface parm {
   name: string;
 }
 
-interface Props {
-  match: any,
-}
-
 function SlideTransition(props: TransitionProps) {
   return <Slide {...props} direction="up" />;
 }
@@ -124,8 +120,10 @@ const AlwaysScollToBottom = () => {
 }
 
 const MessageBox = (props: any) => {
+  const history = useHistory();
   const classes = useStyles()
-  const matches = useMediaQuery('(min-width:780px)');
+  const theme = useTheme();
+  const matches = useMediaQuery('(min-width:920px)');
   const [state, setState] = React.useState<{
     open: boolean;
     Transition: React.ComponentType<TransitionProps & { children?: React.ReactElement<any, any> }>;
@@ -182,15 +180,25 @@ const MessageBox = (props: any) => {
     )
   }
 
+  const handleKeyDown = (event: any) => {
+    if(event.key === 'Enter') {
+      console.log('enter is working...');
+      onSend();
+    }
+  }
+
   return (
     <div className={classes.root}>
       <Header />
       <Grid container spacing={0} style={{display: 'flex', justifyContent: 'center'}}>
         <Grid item></Grid>
-        <Grid item xs={matches !== true ? 12 : 6} >
+        <Grid item xs={matches !== true ? 12 : 7} >
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <Typography variant="h6" color="textPrimary">{name}</Typography>
+              <IconButton onClick={() => history.goBack()} style={{color: '#fff', padding: 8}}>
+                <KeyboardArrowLeftRounded />
+              </IconButton>
+              <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{name}</Typography>
             </div>
             <div style={{flexGrow: 1, height: '73vh', overflowY: 'auto'}}>
               {loading ? (
@@ -205,11 +213,11 @@ const MessageBox = (props: any) => {
                   <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: '100%'}}>
                     {data.retrieveMessages.map((index: any) => (
                       index.currentUser === currentUser ? (
-                        <div className={classes.rightSide}>
+                        <div key={index._id} className={classes.rightSide}>
                           <Typography>{index.message}</Typography>
                         </div>
                       ) : (
-                        <div className={classes.leftSide}>
+                        <div key={index._id} className={classes.leftSide}>
                           <Typography>{index.message}</Typography>
                         </div>
                       )
@@ -230,6 +238,7 @@ const MessageBox = (props: any) => {
               fullWidth
               autoFocus
               value={message}
+              onKeyDown={handleKeyDown}
               endAdornment={
                 <InputAdornment position="end">
                   <SentimentSatisfiedOutlinedIcon
@@ -244,7 +253,7 @@ const MessageBox = (props: any) => {
               inputProps={{ 'aria-label': 'search' }}
             />
             <Button variant="contained" onClick={onSend}
-             style={{height: 35, alignSelf: 'center', color: '#fff', backgroundColor: '#C62828', marginLeft: 20, marginRight: 20}}>Send</Button>
+             style={{height: 35, alignSelf: 'center', backgroundColor: theme.palette.type === 'dark' ? '#EF9A9A' : '#D32F2F', color: theme.palette.type === 'dark' ? 'revert' : '#fff', marginLeft: 20, marginRight: 20}}>Send</Button>
             </div>
           </div>
         </Grid>

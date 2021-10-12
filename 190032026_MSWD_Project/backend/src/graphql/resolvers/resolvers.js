@@ -165,6 +165,34 @@ export const resolvers = {
         console.log(error)
       }
     },
+    deleteGroup: async(root, args, {req}, info ) => {
+      try {
+        let group = await Groups.findById(args.id)
+        if(group) {
+          await Groups.deleteOne({_id: args.id})
+          return `${group.groupName} group deleted successfully!`
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    leaveGroup: async(root, args, {req}, info) => {
+      try {
+        let group = await Groups.findById(args.id)
+        if (group) {
+          await Groups.updateOne({_id: args.id}, {
+            $pull: {
+              persons: args.personName
+            }
+          })
+          return group
+        } else {
+          console.log("cannot leave group")
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     addPerson: async(root, args, {req}, info) => {
       try {
         let group = await Groups.findById(args.id)
@@ -178,6 +206,27 @@ export const resolvers = {
           }
         )
         return group
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    removePerson: async(root, args, {req}, info) => {
+      try {
+        let group = await Groups.findById(args.id)
+          if (group.createdBy === args.admin) {
+          await Groups.updateOne(
+            {_id: args.id},
+            {
+              $pull: {
+                persons: args.person
+              },
+              updatedAt: Date.now
+            }
+          )
+          return group
+        } else {
+          console.log('you cannot remove person - you are not the admin')
+        }
       } catch (error) {
         console.log(error)
       }

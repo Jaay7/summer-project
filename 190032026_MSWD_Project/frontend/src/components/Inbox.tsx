@@ -3,18 +3,17 @@ import Header from './Header'
 import { Grid, Divider, Typography, 
   Button, ListItem, Badge, Avatar, 
   Tabs, Tab, Box, IconButton, Dialog, 
-  DialogActions, DialogContent, Chip,
-  DialogContentText, DialogTitle, Slide, 
-  Input, List, ListItemSecondaryAction,
-  ListItemAvatar, ListItemText
+  TextField, DialogContent, Chip,
+  DialogTitle, Slide, List, 
+  ListItemSecondaryAction,
+  ListItemAvatar, ListItemText, Snackbar
 } from '@material-ui/core'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles, createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import {Link, Route, Switch, Redirect, useRouteMatch} from 'react-router-dom'
+import {Link, Redirect, useRouteMatch} from 'react-router-dom'
 // import MessageBox from './MessageBox';
 import {CircularProgress} from '@material-ui/core'
 import emtInbox from '../images/emtInbox.svg'
-import noData from '../images/noData.svg'
 import { TransitionProps } from '@material-ui/core/transitions';
 import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 
@@ -34,6 +33,22 @@ const StyledBadge = withStyles((theme: Theme) =>
     },
   }),
 )(Badge);
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: '#AED581',
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: '#AED581',
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-focused fieldset': {
+        borderColor: '#AED581',
+      },
+    },
+  },
+})(TextField);
 
 // tab panel
 interface TabPanelProps {
@@ -200,7 +215,6 @@ const Inbox: React.FC = () => {
     setDialogOpen(false);
   }
 
-  let {path, url} = useRouteMatch();
   const classes = useStyles();
 
   return (
@@ -254,7 +268,7 @@ const Inbox: React.FC = () => {
           {/* <DialogContentText id="alert-dialog-slide-description">
             Create a new group with your friends
           </DialogContentText> */}
-          <Input 
+          <CssTextField 
             placeholder="Enter Group Name..." 
             fullWidth
             value={groupName}
@@ -263,7 +277,7 @@ const Inbox: React.FC = () => {
           />
           <br />
           <br />
-          <Input 
+          <CssTextField 
             placeholder="Search people to add..." 
             fullWidth
             value={search}
@@ -329,6 +343,19 @@ const SearchUsers = (props: any) => {
   const { loading, error, data} = useQuery(SEARCH_USERS, {
     variables: { letter: props.search }
   })
+  const [snackState, setSnackState] = React.useState<{
+    open: boolean;
+    Transition: React.ComponentType<TransitionProps & { children?: React.ReactElement<any, any> }>;
+  }>({
+    open: false,
+    Transition: Slide,
+  });
+  const handleCloseSnack = () => {
+    setSnackState({
+      ...snackState,
+      open: false,
+    });
+  };
 
   const [state, setState] = React.useState<any[]>([])
 
@@ -352,6 +379,7 @@ const SearchUsers = (props: any) => {
       await createGroup({
         variables: {groupName: props.groupName,createdBy: props.currentUser, persons: state}
       })
+      setSnackState({open: true, Transition: SlideTransition})
       props.handleDialogClose()
     }
   }
@@ -394,13 +422,22 @@ const SearchUsers = (props: any) => {
         </>
       )}
       <div style={{bottom: 10, alignSelf: 'flex-end', position: "absolute"}}>
-        <Button onClick={handleCancel} color="primary">
+        <Button onClick={handleCancel} style={{color: '#AED581', marginRight: 15}}>
           Cancel
         </Button>
-        <Button onClick={handleOk} color="primary">
+        <Button onClick={handleOk} style={{backgroundColor: '#AED581', color: '#000'}}>
           Ok
         </Button>
       </div>
+      <Snackbar
+        open={snackState.open}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        onClose={handleCloseSnack}
+        autoHideDuration={2500}
+        TransitionComponent={snackState.Transition}
+        message={`${props.groupName} group created successfully!`}
+        key={snackState.Transition.name}
+      />
     </div>
   )
 }
@@ -505,7 +542,7 @@ const Groups: React.FC = () => {
             <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden', fontStyle: 'italic'}}>Start your Conversation</Typography>
             ) : (
             <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden'}}>
-              {index.chats.slice(-1)[0].sender}:{index.chats.slice(-1)[0].message}
+              {index.chats.slice(-1)[0].sender}: {index.chats.slice(-1)[0].message}
             </Typography>
           )}
         </div>

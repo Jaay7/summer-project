@@ -14,9 +14,6 @@ import OthersProfile from './components/OthersProfile';
 import Settings from './components/Settings';
 import GroupMsgBox from './components/GroupMsgBox';
 
-interface MTheme {
-  palette: any
-}
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',

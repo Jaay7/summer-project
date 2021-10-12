@@ -6,8 +6,6 @@ import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
 import SearchIcon from '@material-ui/icons/Search'
 import { useQuery, gql } from '@apollo/client';
 import { Link, Redirect } from 'react-router-dom';
-import InboxIcon from '@material-ui/icons/Inbox';
-import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({

@@ -65,10 +65,23 @@ export const typeDefs = gql`
       createdBy: String!
       persons: [String!]!
     ): GroupChat!
+    deleteGroup(
+      id: ID!
+      admin: String!
+    ): String
+    leaveGroup(
+      id: ID!
+      personName: String!
+    ): GroupChat
     addPerson(
       id: ID!
       currentUser: String!
       persons: [String!]!
+    ): GroupChat!
+    removePerson(
+      id: ID!
+      admin: String!
+      person: String!
     ): GroupChat!
     sendGroupMessage(
       id: ID!
