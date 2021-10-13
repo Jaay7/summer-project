@@ -342,7 +342,7 @@ const Transition = React.forwardRef(function Transition(
         <Grid item xs={matches !== true ? 12 : 7}>
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <IconButton onClick={() => history.goBack()} style={{color: '#fff', padding: 8}}>
+              <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
                 <KeyboardArrowLeftRounded />
               </IconButton>
               <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{data.retrieveGroupMessages.groupName}</Typography>

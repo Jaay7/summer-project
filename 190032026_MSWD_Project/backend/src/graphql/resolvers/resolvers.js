@@ -28,43 +28,42 @@ export const resolvers = {
     },
     retrieveMessages: async( root, args, { req }, info ) => {
       try {
-        if (!await User.findOne({username: args.currentUser}) && !await User.findOne({username: args.otherUser})) {
-          throw new Error("users doesn't exist cannot retrieve messages")
-        }
-        const messages = await Chat.find({
-          $or: [
-            {$and: [
-              {currentUser: args.currentUser},
-              {otherUser: args.otherUser}
-            ]},
-            {$and: [
-              {currentUser: args.otherUser},
-              {otherUser: args.currentUser}
-            ]}
+        if (!await Chat.findOne({
+          $and: [
+            {persons: args.currentUser},
+            {persons: args.otherUser}
           ]
-        });
-        var result = Object.keys(messages).map(key => messages[key]).sort((a,b) => a.createdAt > b.createdAt ? 1 : -1)
-        return result
+        })) {
+          throw new Error("chat doesn't exist cannot retrieve messages")
+        }
+        const messages = await Chat.findOne({
+          $and: [
+            {persons: args.currentUser},
+            {persons: args.otherUser}
+          ]
+        })
+        // var result = Object.keys(messages.chats).map(key => messages.chats[key]).sort((a,b) => a.date > b.date ? 1 : -1)
+        return messages
       } catch (error) {
         console.log(error)
       }
     },
     retrieveChats: async( root, args, { req }, info ) => {
       try {
-        let allChats = await Chat.find({currentUser: args.currentUser})
+        let allChats = await Chat.find({persons: args.currentUser})
         // let allChats = await Chat.find({$or: [
         //   {currentUser: args.currentUser},
         //   {otherUser: args.currentUser}
         // ]})
-        function getUnique(arr, index) {
-          const unique = arr
-            .map(e => e[index])
-            .map((e, i, final) => final.indexOf(e) === i && i)
-            .filter(e => arr[e]).map(e => arr[e]);
-          return unique
-        }
-        let chats = getUnique(allChats, 'otherUser')
-        return chats
+        // function getUnique(arr, index) {
+        //   const unique = arr
+        //     .map(e => e[index])
+        //     .map((e, i, final) => final.indexOf(e) === i && i)
+        //     .filter(e => arr[e]).map(e => arr[e]);
+        //   return unique
+        // }
+        // let chats = getUnique(allChats, 'otherUser')
+        return allChats
       } catch (error) {
         console.log(error)
       }
@@ -139,11 +138,41 @@ export const resolvers = {
     },
     sendMessage: async(root, args, {req}, info) => {
       try {
-        if (!await User.findOne({username: args.currentUser}) && !await User.findOne({username: args.otherUser})) {
+        if (!await User.findOne({username: args.sender}) && !await User.findOne({username: args.otherUser})) {
           throw new Error("users doesn't exist cannot send message")
         }
-        let msg = await Chat.create(args);
-        return msg
+        if (!await Chat.findOne({
+          $and: [
+            {persons: args.sender},
+            {persons: args.otherUser}
+          ]
+        })) {
+          let msg = await Chat.create({persons: [args.sender, args.otherUser], chats: [{
+            sender: args.sender, message: args.message
+          }]});
+          return msg
+        } else {
+          let msg = [{sender: args.sender, message: args.message}]
+          let chats = await Chat.findOne({
+            $and: [
+              {persons: args.sender},
+              {persons: args.otherUser}
+            ]
+          })
+          await Chat.updateOne(
+            { $and: [
+                {persons: args.sender},
+                {persons: args.otherUser}
+              ]
+            },
+            {
+              $push: {
+                chats: msg
+              }
+            }
+          )
+          return chats
+        }
       } catch (error) {
         console.log(error)
       }

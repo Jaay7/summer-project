@@ -7,7 +7,7 @@ export const typeDefs = gql`
     refreshToken: Auth!
     otherUser(username: String!): User
     searchUser(letter: String!): [User!]!
-    retrieveMessages(currentUser: String!, otherUser: String!): [Chat!]!
+    retrieveMessages(currentUser: String!, otherUser: String!): Chat!
     retrieveChats(currentUser: String!): [Chat!]!
     retrieveGroupMessages(id: ID!): GroupChat!
     retrieveGroups(currentUser: String!): [GroupChat!]!
@@ -25,18 +25,16 @@ export const typeDefs = gql`
     token: String!
     refreshToken: String!
   }
-  type Chat {
-    currentUser: String!
-    otherUser: String!
-    message: String!
-    isSeen: Boolean
-    createdAt: String!
-  }
-  
   type chats {
     sender: String!
     message: String!
     date: String
+  }
+  type Chat {
+    id: ID!
+    persons: [String!]!
+    chats: [chats]
+    createdAt: String!
   }
   type GroupChat {
     id: ID!
@@ -56,7 +54,7 @@ export const typeDefs = gql`
     ): Auth!
     login(username: String!, password: String!): Auth!
     sendMessage(
-      currentUser: String!
+      sender: String!
       otherUser: String!
       message: String!
     ): Chat!

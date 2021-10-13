@@ -159,9 +159,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const ALL_CHATS = gql`
   query RetrieveChats($currentUser: String!) {
     retrieveChats(currentUser: $currentUser) {
-      currentUser
-      otherUser
-      message
+      id
+      persons
+      chats {
+        sender
+        message
+        date
+      }
     }
   }
 `;
@@ -476,15 +480,15 @@ const Chats: React.FC = () => {
       ) :
       (data.retrieveChats.map((index: any) => (
         <>
-        <ListItem key={index.username} className={classes.listlink} component={Link} to={`${url}/${index.otherUser === currentUser ? index.currentUser : index.otherUser}`}>
-        <Avatar >{index.username}</Avatar>
+        <ListItem key={index.id} className={classes.listlink} component={Link} to={`${url}/${index.persons[0] === currentUser ? index.persons[1] : index.persons[0]}`}>
+        <Avatar>M</Avatar>
         <span style={{flexGrow: .07}}></span>
         <div>
           <Typography color="textPrimary" style={{fontSize: 17}}>
-            {index.otherUser === currentUser ? (<>{index.currentUser}</>) : (<>{index.otherUser}</>)}
+            {index.persons[0] === currentUser ? index.persons[1] : index.persons[0]}
           </Typography>
           <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden'}}>
-            {index.message}
+            {index.chats.slice(-1)[0].message}
           </Typography>
         </div>
         </ListItem>

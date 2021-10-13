@@ -86,21 +86,25 @@ const useStyles = makeStyles((theme: Theme) =>
 const RET_MSGS = gql`
   query RetrieveMessages($currentUser: String!, $otherUser: String!) {
     retrieveMessages(currentUser: $currentUser, otherUser: $otherUser){
-      currentUser
-      otherUser
-      message
-      isSeen
+      id
+      persons
+      chats {
+        sender
+        message
+      }
     }
   }
 `;
 
 const SEND_MSG = gql`
-  mutation SendMessage($currentUser: String!, $otherUser: String!, $message: String!) {
-    sendMessage(currentUser: $currentUser, otherUser: $otherUser, message: $message){
-      currentUser
-      otherUser
-      message
-      isSeen
+  mutation SendMessage($sender: String!, $otherUser: String!, $message: String!) {
+    sendMessage(sender: $sender, otherUser: $otherUser, message: $message){
+      id
+      persons
+      chats {
+        sender
+        message
+      }
     }
   }
 `;
@@ -159,7 +163,7 @@ const MessageBox = (props: any) => {
   const onSend = async() => {
     if(message !== '') {  
       await sendMessage({
-        variables: {currentUser: currentUser, otherUser: name, message: message}
+        variables: {sender: currentUser, otherUser: name, message: message}
       })
     } else {
       setState({open: true, Transition: SlideTransition})
@@ -195,7 +199,7 @@ const MessageBox = (props: any) => {
         <Grid item xs={matches !== true ? 12 : 7} >
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <IconButton onClick={() => history.goBack()} style={{color: '#fff', padding: 8}}>
+              <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
                 <KeyboardArrowLeftRounded />
               </IconButton>
               <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{name}</Typography>
@@ -204,15 +208,15 @@ const MessageBox = (props: any) => {
               {loading ? (
                 <><CircularProgress /></>
                 ) : error ? (
-                  <><Redirect to="/login" /></>
+                  <></>
                 ) : data.retrieveMessages.length === 0 ? (
                   <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
                     <Typography variant="h5" style={{color: '#BDBDBD'}}>Start your conversation</Typography>
                   </div>
                 ) : (
                   <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: '100%'}}>
-                    {data.retrieveMessages.map((index: any) => (
-                      index.currentUser === currentUser ? (
+                    {data.retrieveMessages.chats.map((index: any) => (
+                      index.sender === currentUser ? (
                         <div key={index._id} className={classes.rightSide}>
                           <Typography>{index.message}</Typography>
                         </div>
