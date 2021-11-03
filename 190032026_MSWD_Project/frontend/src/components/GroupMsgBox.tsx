@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
-import {Redirect, useParams, useHistory} from 'react-router-dom'
+import {useHistory} from 'react-router-dom'
 import { 
   Grid, Snackbar, Button, Chip, List,
   ListItem, ListItemSecondaryAction, 
@@ -9,7 +9,7 @@ import {
   InputBase, InputAdornment, Slide,
   Dialog, DialogContent, 
   DialogContentText, DialogTitle, Input, 
-  Avatar, useMediaQuery, Drawer, Divider,
+  Avatar, Drawer, Divider,
   TextField, ListItemAvatar
 } from '@material-ui/core'
 import Header from './Header'
@@ -22,14 +22,14 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import GroupAddOutlinedIcon from '@material-ui/icons/GroupAddOutlined';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import { KeyboardArrowLeftRounded } from '@material-ui/icons';
 import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      minHeight: '100vh',
+      minHeight: 'max-content',
+      margin: "0px 20px",
       backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff'
     },
     inputRoot: {
@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
     chatbox: {
       borderLeft: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
       borderRight: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
-      minHeight: '91.5vh',
+      minHeight: '83.5vh',
       position: 'relative'
     },
     tabbar: {
-      height: 40,
+      // height: 40,
       borderBottom: theme.palette.type === 'dark' ? '1px solid #303030' : '1px solid #e2e2e2',
       display: 'flex',
       alignItems: 'center',
@@ -177,9 +177,6 @@ const DELETE_GROUP = gql`
   }
 `
 
-interface parm {
-  id: any;
-}
 
 // slide amination
 function SlideTransition(props: TransitionProps) {
@@ -205,7 +202,7 @@ const Transition = React.forwardRef(function Transition(
     const history = useHistory()
     const classes = useStyles()
     const theme = useTheme();
-    const matches = useMediaQuery('(min-width:920px)');
+    // const matches = useMediaQuery('(min-width:920px)');
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [drawerOpen, setDrawerOpen] = React.useState(false);
     const [ search, setSearch ] = useState('')
@@ -253,15 +250,14 @@ const Transition = React.forwardRef(function Transition(
   }
   
   let currentUser = localStorage.getItem("user")
-  let {id} = useParams<parm>()
   
   const [ message, setMessage ] = useState('')
   const [emojiPickerState, SetEmojiPicker] = useState(false);
   const changeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
   }
-  const { loading, error, data } = useQuery(RET_GRP_MSGS, {
-    variables: {id: id},
+  const { loading, data } = useQuery(RET_GRP_MSGS, {
+    variables: {id: props.groupId},
     pollInterval: 500
   })
   
@@ -270,7 +266,7 @@ const Transition = React.forwardRef(function Transition(
   const onSend = async() => {
     if(message !== '') {  
       await sendMessage({
-        variables: {id: id, sender: currentUser, message: message}
+        variables: {id: props.groupId, sender: currentUser, message: message}
       })
     } else {
       setSnackMessage('cannot send empty message');
@@ -283,7 +279,7 @@ const Transition = React.forwardRef(function Transition(
 
   const onDelete = async() => {
     const response = await deleteGroup({
-      variables: {id: id, admin: currentUser}
+      variables: {id: props.groupId, admin: currentUser}
     })
     if(response) {
       setSnackMessage(response.data?.deleteGroup);
@@ -297,7 +293,7 @@ const Transition = React.forwardRef(function Transition(
   const onEdit = async() => {
     if(groupName !== '') {
       await editGroupName({
-        variables: {id: id, groupName: groupName}
+        variables: {id: props.groupId, groupName: groupName}
       })
     }
     setGroupName('')
@@ -333,18 +329,25 @@ const Transition = React.forwardRef(function Transition(
       <CircularProgress  size="30px" style={{color: '#0277BD'}} />
     </div>
     </>
-    if (error) return <Redirect to="/login" />
+    // if (error) return <Redirect to="/login" />
+    if (props.groupId === '' ) {
+      return (
+        <div style={{height: '100%', width: '100%', display: 'grid', placeItems: 'center', margin: 20}}>
+          <Typography color="textPrimary">Select a person to start messaging</Typography>
+        </div>
+      )
+    }
     return (
       <div className={classes.root}>
-      <Header />
+      {/* <Header /> */}
       <Grid container spacing={0} style={{display: 'flex', justifyContent: 'center'}}>
         <Grid item></Grid>
-        <Grid item xs={matches !== true ? 12 : 7}>
+        <Grid item xs={11}>
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
+              {/* <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
                 <KeyboardArrowLeftRounded />
-              </IconButton>
+              </IconButton> */}
               <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{data.retrieveGroupMessages.groupName}</Typography>
               <span style={{flexGrow: 1}}></span>
               {/* <IconButton onClick={handleDialogOpen}>
@@ -354,7 +357,7 @@ const Transition = React.forwardRef(function Transition(
                 <InfoOutlinedIcon />
               </IconButton>
             </div>
-            <div style={{flexGrow: 1, height: '73vh', overflowY: 'auto'}}>
+            <div style={{flexGrow: 1, height: '65vh', overflowY: 'auto'}}>
               {data.retrieveGroupMessages.length === 0 ? (
                   <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
                     <Typography variant="h5" style={{color: '#BDBDBD'}}>Start your conversation</Typography>
@@ -520,7 +523,7 @@ const Transition = React.forwardRef(function Transition(
             classes={classes}
             currentUser={currentUser}
             groupData={data}
-            id={id}
+            id={props.groupId}
             handleDialogClose={handleDialogClose}
             handleDialogCancel={handleDialogCancel}
           />

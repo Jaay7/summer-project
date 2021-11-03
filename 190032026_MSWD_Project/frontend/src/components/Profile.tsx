@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useQuery, gql } from '@apollo/client';
 import Header from './Header';
-import {CircularProgress, Grid, Typography} from '@material-ui/core'
+import { Card, CircularProgress, Grid, Typography} from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,6 +34,24 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         backgroundColor: '#EF5350'
       }
+    },
+    leftContainer: {
+      height: '60vh',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+    },
+    boxes: {
+      padding: "10px 20px",
+      backdropFilter: 'blur(10px)',
+      // border: `1px solid ${theme.palette.divider}`,
+      boxShadow: '3px 3px 8px #0000002a',
+      borderRadius: 10,
+      width: '80%',
+      background: '#AED58110',
+      display: 'inline-block',
+      marginBottom: '20px',
     }
   }),
 );
@@ -80,17 +98,28 @@ const Profile: React.FC = () => {
           <><p>{error.message}</p><Redirect to="/login" /></>
         ) : (
           <Grid container spacing={0}>
+            <Grid item xs={1}></Grid>
             <Grid item xs={3}>
-              {/* <div>
-              <Avatar src={`${data.profile.profilePic}`} alt={data.profile.username} style={{height: 150, width: 150, borderRadius: "50%", objectFit: "cover"}} />
-              </div> */}
-            </Grid>
-            <Grid item xs={6}>
-              <div>
-                <Typography>Name: {data.profile.name}</Typography>
-                <Typography>Username: {data.profile.username}</Typography>
-                <Typography>Email: {data.profile.email}</Typography>
+              <div className={classes.leftContainer}>
+              {/* <Avatar src={`${data.profile.profilePic}`} alt={data.profile.username} style={{height: 150, width: 150, borderRadius: "50%", objectFit: "cover"}} /> */}
+                <Typography gutterBottom variant="h5" color="textPrimary">Your Profile</Typography>
+                <span style={{flexGrow: .2}}></span>
+                <Card elevation={4} variant="elevation" className={classes.boxes}>
+                  <Typography style={{fontSize: 20}} color="textPrimary">Name</Typography>
+                  <Typography color="textSecondary">{data.profile.name}</Typography>
+                </Card>
+                <Card elevation={4} variant="elevation" className={classes.boxes}>
+                  <Typography style={{fontSize: 20}} color="textPrimary">Username</Typography>
+                  <Typography color="textSecondary">{data.profile.username}</Typography>
+                </Card>
+                <Card elevation={4} variant="elevation" className={classes.boxes}>
+                  <Typography style={{fontSize: 20}} color="textPrimary">Email</Typography>
+                  <Typography color="textSecondary">{data.profile.email}</Typography>
+                </Card>
               </div>
+            </Grid>
+            <Grid item xs={5}>
+              
             </Grid>
           <Grid item xs={3}></Grid>
         </Grid>

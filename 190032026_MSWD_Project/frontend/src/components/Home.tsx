@@ -50,7 +50,7 @@ const USER_DATA = gql`
 const Home: React.FC = () => {
   const classes = useStyles();
 
-  const { loading, error, data } = useQuery(USER_DATA, {
+  const { loading, error } = useQuery(USER_DATA, {
     context: {
       headers: {
         "Authorization": localStorage.getItem("token")

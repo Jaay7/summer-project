@@ -1,25 +1,25 @@
 import React, {useState} from 'react'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
-import {Redirect, useParams, useHistory} from 'react-router-dom'
+// import {useHistory} from 'react-router-dom'
 import { Grid, Snackbar, Button, 
   Typography,InputBase, InputAdornment, 
-  Slide, useMediaQuery, IconButton
+  Slide, 
+  // useMediaQuery,
 } from '@material-ui/core'
-import Header from './Header'
 import {CircularProgress} from '@material-ui/core'
 import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
 import { Picker } from 'emoji-mart';
 import "emoji-mart/css/emoji-mart.css"
 import { TransitionProps } from '@material-ui/core/transitions';
-import { KeyboardArrowLeftRounded } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      minHeight: '100vh',
+      minHeight: 'max-content',
+      margin: "0px 20px",
       backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff'
     },
     inputRoot: {
@@ -45,11 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
     chatbox: {
       borderLeft: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
       borderRight: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
-      minHeight: '91.5vh',
+      minHeight: '83.5vh',
       position: 'relative'
     },
     tabbar: {
-      height: 40,
+      // height: 40,
       borderBottom: theme.palette.type === 'dark' ? '1px solid #303030' : '1px solid #e2e2e2',
       display: 'flex',
       alignItems: 'center',
@@ -109,9 +109,6 @@ const SEND_MSG = gql`
   }
 `;
 
-interface parm {
-  name: string;
-}
 
 function SlideTransition(props: TransitionProps) {
   return <Slide {...props} direction="up" />;
@@ -124,10 +121,10 @@ const AlwaysScollToBottom = () => {
 }
 
 const MessageBox = (props: any) => {
-  const history = useHistory();
+  // const history = useHistory();
   const classes = useStyles()
   const theme = useTheme();
-  const matches = useMediaQuery('(min-width:920px)');
+  // const matches = useMediaQuery('(min-width:920px)');
   const [state, setState] = React.useState<{
     open: boolean;
     Transition: React.ComponentType<TransitionProps & { children?: React.ReactElement<any, any> }>;
@@ -143,14 +140,14 @@ const MessageBox = (props: any) => {
     });
   };
   let currentUser = localStorage.getItem("user")
-  let {name} = useParams<parm>()
+  // let {name} = useParams<parm>()
   const [ message, setMessage ] = useState('')
   const [emojiPickerState, SetEmojiPicker] = useState(false);
   const changeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
   }
   const { loading, error, data } = useQuery(RET_MSGS, {
-    variables: {currentUser: currentUser, otherUser: name},
+    variables: {currentUser: currentUser, otherUser: props.name},
     pollInterval: 500
   })
 
@@ -163,7 +160,7 @@ const MessageBox = (props: any) => {
   const onSend = async() => {
     if(message !== '') {  
       await sendMessage({
-        variables: {sender: currentUser, otherUser: name, message: message}
+        variables: {sender: currentUser, otherUser: props.name, message: message}
       })
     } else {
       setState({open: true, Transition: SlideTransition})
@@ -191,20 +188,27 @@ const MessageBox = (props: any) => {
     }
   }
 
+  if (props.name === '' ) {
+    return (
+      <div style={{height: '100%', width: '100%', display: 'grid', placeItems: 'center', margin: 20}}>
+        <Typography color="textPrimary">Select a person to start messaging</Typography>
+      </div>
+    )
+  }
+
   return (
     <div className={classes.root}>
-      <Header />
+      {/* <Header /> */}
       <Grid container spacing={0} style={{display: 'flex', justifyContent: 'center'}}>
-        <Grid item></Grid>
-        <Grid item xs={matches !== true ? 12 : 7} >
+        <Grid item xs={11} >
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
-              <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
+              {/* <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
                 <KeyboardArrowLeftRounded />
-              </IconButton>
-              <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{name}</Typography>
+              </IconButton> */}
+              <Typography variant="h6" color="textPrimary" style={{marginLeft: 8}}>{props.name}</Typography>
             </div>
-            <div style={{flexGrow: 1, height: '73vh', overflowY: 'auto'}}>
+            <div style={{flexGrow: 1, height: '65vh', overflowY: 'auto'}}>
               {loading ? (
                 <><CircularProgress /></>
                 ) : error ? (
@@ -260,8 +264,6 @@ const MessageBox = (props: any) => {
              style={{height: 35, alignSelf: 'center', backgroundColor: theme.palette.type === 'dark' ? '#EF9A9A' : '#D32F2F', color: theme.palette.type === 'dark' ? 'revert' : '#fff', marginLeft: 20, marginRight: 20}}>Send</Button>
             </div>
           </div>
-        </Grid>
-        <Grid item>
         </Grid>
       </Grid>
       <Snackbar

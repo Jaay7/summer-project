@@ -31,6 +31,9 @@ const App: React.FC = () => {
   
   const muiTheme = createMuiTheme({
     palette: {
+      primary: {
+        main: darkTheme ? '#90caf9' : '#757ce8',
+      },
       type: darkTheme ? "dark" : "light"
     }
   });
@@ -65,7 +68,7 @@ const App: React.FC = () => {
             </Route>
             <Route exact path="/login" component={Login} />
             <Route exact path="/signup" component={Signup} />
-            <Route exact path="/inbox">
+            <Route exact path="/inbox/">
               <Inbox />
             </Route>
             <Route exact path="/profile">
@@ -77,9 +80,9 @@ const App: React.FC = () => {
             <Route exact path="/profile/:otherUser">
               <OthersProfile />
             </Route>
-            <Route exact path="/inbox/:name">
+            {/* <Route exact path="/inbox/:name">
               <MessageBox />
-            </Route>
+            </Route> */}
             <Route exact path="/inbox/group/:id">
               <GroupMsgBox />
             </Route>
