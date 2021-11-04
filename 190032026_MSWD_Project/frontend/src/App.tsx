@@ -9,14 +9,14 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 import Profile from './components/Profile';
 import Search from './components/Search';
 import Inbox from './components/Inbox';
-import MessageBox from './components/MessageBox';
 import OthersProfile from './components/OthersProfile';
 import Settings from './components/Settings';
 import GroupMsgBox from './components/GroupMsgBox';
 
+const BASE_URL = process.env.BASE_URL;
 
 const client = new ApolloClient({
-  uri: 'http://localhost:4000/graphql',
+  uri: BASE_URL,
   cache: new InMemoryCache()
 });
 
