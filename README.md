@@ -2,6 +2,14 @@
 
 A basic chat app developed using MERN stack along with GraphQL and Apollo.
 
+Used Vercel to deploy the frontend of the project.
+
+https://summer-project.vercel.app/
+
+Used Heroku to deploy the backend of the project.
+
+https://msg-app-backend.herokuapp.com/graphql
+
 ## To run this project
 
 - Clone the repository:
