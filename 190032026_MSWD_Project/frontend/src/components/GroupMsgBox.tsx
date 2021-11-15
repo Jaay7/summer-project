@@ -12,7 +12,7 @@ import {
   Avatar, Drawer, Divider,
   TextField, ListItemAvatar
 } from '@material-ui/core'
-import Header from './Header'
+// import Header from './Header'
 import {CircularProgress} from '@material-ui/core'
 import SentimentSatisfiedOutlinedIcon from '@material-ui/icons/SentimentSatisfiedOutlined';
 import { Picker } from 'emoji-mart';
