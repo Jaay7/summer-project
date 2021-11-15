@@ -259,7 +259,7 @@ const Settings: React.FC<dark> = ({onToggleDark}) => {
       ) : error ? (
         <><p>{error.message}</p><Redirect to="/login" /></>
       ) : (
-      <Grid container>
+      <Grid container spacing={0} style={{marginTop: 70}}>
         <Grid item xs={2}></Grid>
         <div className={classes.main}>
         <div className={classes.container}>

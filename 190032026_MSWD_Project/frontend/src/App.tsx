@@ -16,7 +16,7 @@ import GroupMsgBox from './components/GroupMsgBox';
 const BASE_URL = process.env.BASE_URL;
 
 const client = new ApolloClient({
-  uri: BASE_URL,
+  uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache()
 });
 

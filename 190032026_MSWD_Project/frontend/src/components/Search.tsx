@@ -86,7 +86,7 @@ const Search: React.FC = () => {
   return (
     <div className={classes.root}>
       <Header />
-      <div style={{width: "100%", alignItems: 'center', display: 'flex', flexDirection: 'column', marginTop: 50}}>
+      <div style={{width: "100%", alignItems: 'center', display: 'flex', flexDirection: 'column', marginTop: 100}}>
         <InputBase
           placeholder="Search for the Users…"
           autoFocus

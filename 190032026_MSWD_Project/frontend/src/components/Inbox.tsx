@@ -238,7 +238,7 @@ const Inbox: React.FC = () => {
   return (
     <div className={classes.root}>
       <Header />
-        <div style={{height: '91.5vh'}}>
+        <div style={{height: '90vh', marginTop: 70}}>
           <StyledTabs value={value} onChange={handleChange} aria-label="styled tabs example">
             <StyledTab label="Chats" {...a11yProps(0)} />
             <StyledTab label="Groups" {...a11yProps(1)} />

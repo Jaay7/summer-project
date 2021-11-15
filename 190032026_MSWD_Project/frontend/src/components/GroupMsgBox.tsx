@@ -324,7 +324,6 @@ const Transition = React.forwardRef(function Transition(
       setGroupName(event.target.value);
     }
     if (loading) return <>
-    <Header />
     <div style={{height: '79vh', justifyContent: 'center', alignItems: 'center', display: 'flex'}}>
       <CircularProgress  size="30px" style={{color: '#0277BD'}} />
     </div>

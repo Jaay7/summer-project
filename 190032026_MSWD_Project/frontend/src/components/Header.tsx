@@ -7,14 +7,19 @@ import SettingsIcon from '@material-ui/icons/Settings';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      boxShadow: "none",
       flexGrow: 1,
+      display: "flex",
+      justifyContent: 'center',
     },
     appbar: {
+      boxShadow: "inset 0 0 10px #00000090",
       backgroundColor: theme.palette.background.default,
-      boxShadow: "none",
-      borderBottom: theme.palette.type === 'dark' ? '1px solid #616161' : '1px solid #e2e2e2',
-      zIndex: 1
+      borderRadius: 20,
+      width: "98%",
+      // borderBottom: theme.palette.type === 'dark' ? '1px solid #616161' : '1px solid #e2e2e2',
+      zIndex: 1,
+      position: "fixed",
+      top: 10
     },
     link: {
       color: theme.palette.text.secondary,

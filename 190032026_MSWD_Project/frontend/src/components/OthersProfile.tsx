@@ -138,7 +138,7 @@ const OthersProfile: React.FC = () => {
         <><p>{error.message}</p><Redirect to="/login" /></>
       ) : (
         <>
-          <Grid container spacing={0}>
+          <Grid container spacing={0} style={{marginTop: 70}}>
             <Grid item xs={1}></Grid>
             <Grid item xs={3}>
               <div className={classes.leftContainer}>
