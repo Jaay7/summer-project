@@ -15,6 +15,7 @@ import GroupMsgBox from './components/GroupMsgBox';
 
 
 const client = new ApolloClient({
+  ssrMode: true,
   uri: "https://msg-app-backend.herokuapp.com/graphql",
   cache: new InMemoryCache()
 });
