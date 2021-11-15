@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
     },
     appbar: {
-      boxShadow: "inset 0 0 10px #00000090",
+      boxShadow: "inset 0 0 10px #e2e2e290",
       backgroundColor: theme.palette.background.default,
       borderRadius: 20,
       width: "98%",
