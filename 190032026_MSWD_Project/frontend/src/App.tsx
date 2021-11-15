@@ -13,10 +13,9 @@ import OthersProfile from './components/OthersProfile';
 import Settings from './components/Settings';
 import GroupMsgBox from './components/GroupMsgBox';
 
-const BASE_URL = process.env.BASE_URL;
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://msg-app-backend.herokuapp.com/graphql",
   cache: new InMemoryCache()
 });
 
