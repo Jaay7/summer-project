@@ -22,11 +22,15 @@ git clone https://github.com/Jaay7/summer-project.git
 
 1. First navigate to the backend directory:
 
-`cd backend`
+```sh
+cd backend
+```
 
 2. Installing the dependencies:
 
-`npm install`
+```sh
+npm install
+```
 
 3. Create a new file .env with:
 
@@ -38,7 +42,9 @@ APP_REFRESH_SECRET = <APP_REFRESH_SECRET>
 
 4. To start the server:
 
-`npm start`
+```sh
+npm start
+```
 
 Open http://localhost:4000/graphql to view it in the browser. It will open the graphql playground.
 
@@ -46,15 +52,20 @@ Open http://localhost:4000/graphql to view it in the browser. It will open the g
 
 1. First navigate to the frontend directory:
 
-`cd frontend`
-
+```sh
+cd frontend
+```
 2. Install the dependencies.
 
-`yarn`
+```sh
+yarn
+```
 
 3. Running the App:
 
-`yarn start`
+```sh
+yarn start
+```
 
 Open http://localhost:3001 to view it in the browser.
 
