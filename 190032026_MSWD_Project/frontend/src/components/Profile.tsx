@@ -1,9 +1,9 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles, useTheme } from '@material-ui/core/styles';
 import { useQuery, gql } from '@apollo/client';
 import Header from './Header';
-import { Card, CircularProgress, Grid, Typography} from '@material-ui/core'
+import { Card, CircularProgress, Grid, Typography, useMediaQuery} from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -71,6 +71,8 @@ const USER_DATA = gql`
 
 const Profile: React.FC = () => {
   const classes = useStyles();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('xs'));
   // const [expanded, setExpanded] = React.useState<string | false>(false);
 
   // const handleChange = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
@@ -99,7 +101,7 @@ const Profile: React.FC = () => {
         ) : (
           <Grid container spacing={0} style={{marginTop: 70}}>
             <Grid item xs={1}></Grid>
-            <Grid item xs={3}>
+            <Grid item xs={matches ? 10 : 3}>
               <div className={classes.leftContainer}>
               {/* <Avatar src={`${data.profile.profilePic}`} alt={data.profile.username} style={{height: 150, width: 150, borderRadius: "50%", objectFit: "cover"}} /> */}
                 <Typography gutterBottom variant="h5" color="textPrimary">Your Profile</Typography>
@@ -118,7 +120,7 @@ const Profile: React.FC = () => {
                 </Card>
               </div>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={1}>
               
             </Grid>
           <Grid item xs={3}></Grid>

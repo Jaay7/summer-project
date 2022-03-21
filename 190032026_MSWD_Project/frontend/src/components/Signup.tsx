@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, TextField, Typography, Grid, Paper, CssBaseline, Slide, Snackbar } from '@material-ui/core';
+import { Button, TextField, Typography, Grid, CssBaseline, Slide, Snackbar } from '@material-ui/core';
 import { makeStyles, withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Link, useHistory, Redirect } from 'react-router-dom'
 import { gql, useMutation } from '@apollo/client';
@@ -7,9 +7,14 @@ import { TransitionProps } from '@material-ui/core/transitions';
 
 const ColorButton = withStyles((theme: Theme) => ({
   root: {
+    textTransform: 'capitalize',
+    height: 40,
+    borderRadius: 5,
+    boxShadow: 'none',
     color: theme.palette.getContrastText('#0e9170'),
     background: 'linear-gradient(152deg, #2193b0 0%, #6dd5ed 100%)',
     '&:hover': {
+      boxShadow: '2px 4px 6px #2193b060',
       backgroundColor: '#1a866b96',
     },
   },
@@ -48,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       padding: theme.spacing(2),
-      margin: "0px 30px",
+      margin: "0px 15px",
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -185,10 +190,7 @@ const Signup: React.FC = () => {
       ) : (
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
-        <Grid item xs={false} sm={4} md={8} className={classes.image}>
-          {/* <Typography>This is Signup page</Typography> */}
-        </Grid>
-        <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={4}>
           <div className={classes.paper}>
             <div>
               <Typography component="h1" variant="h5">Signup Here,</Typography>
@@ -264,6 +266,9 @@ const Signup: React.FC = () => {
               </div>
             </div>
           </div>
+        </Grid>
+        <Grid item xs={false} sm={4} md={8} className={classes.image}>
+          {/* <Typography>This is Signup page</Typography> */}
         </Grid>
       </Grid>
       )}

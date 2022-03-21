@@ -19,12 +19,17 @@ const useStyles = makeStyles((theme: Theme) =>
       backdropFilter: 'blur(10px)',
       justifyContent: 'space-between',
     },
-    root: {
+    container: {
       minHeight: '100vh',
       backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff' 
     },
     sfubox: {
-      backgroundColor: theme.palette.type === 'dark' ? '#2E7D32' : '#A5D6A7'
+      backgroundColor: theme.palette.type === 'dark' ? '#2E7D32' : '#A5D6A7',
+      '&:hover': {
+        "& $container": {
+          backgroundColor: theme.palette.type === 'dark' ? '#1B5E20' : '#81C784',
+        }
+      }
     },
     gotbox: {
       backgroundColor: theme.palette.type === 'dark' ? '#EF6C00' : '#FFCC80'
@@ -59,7 +64,7 @@ const Home: React.FC = () => {
     pollInterval: 500
   })
   return (
-    <div className={classes.root}>
+    <div className={classes.container}>
       <Header />
       {loading ? (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '89vh'}}>

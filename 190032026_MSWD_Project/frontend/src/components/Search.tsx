@@ -45,6 +45,13 @@ const useStyles = makeStyles((theme: Theme) =>
         transform: 'translate(0px, -15px)'
       },
       transition: 'transform 0.5s',
+      [theme.breakpoints.down('xs')]: {
+        padding: 15,
+        width: '80vw',
+        marginRight: 0,
+        height: 'max-content',
+        flexDirection: 'row',
+      }
     },
     root: {
       backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff',
@@ -74,11 +81,13 @@ const SEARCH_USERS = gql`
 
 const Search: React.FC = () => {
   const classes = useStyles();
+  // const theme = useTheme();
   const [ search, setSearch ] = useState('')
   const { loading, error, data} = useQuery(SEARCH_USERS, {
     variables: { letter: search }
   })
   let currentUser = localStorage.getItem("user")
+  // const matches = theme.breakpoints.down('sm');
 
   const changeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -133,11 +142,13 @@ const Search: React.FC = () => {
                 <Card variant="outlined" className={classes.itemss}>
                   <Avatar style={{height: 60, width: 60}}>{index.username.charAt(0).toUpperCase()}</Avatar>
                   <span style={{flexGrow: 1}}></span>
-                    <Typography variant="h6" color="textPrimary">{index.username}</Typography>
-                    <Typography color="textSecondary">{index.name}</Typography>
+                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                      <Typography variant="h6" color="textPrimary">{index.username}</Typography>
+                      <Typography color="textSecondary">{index.name}</Typography>
+                    </div>
                   <span style={{flexGrow: 1}}></span>
                   <Link style={{textDecoration: 'none'}} to={`/profile/${index.username}`}>
-                    <Button variant="outlined" style={{backgroundColor: '#0277BD', color: '#fff', height: 30, width: 130, textTransform: 'capitalize'}}>
+                    <Button variant="outlined" style={{backgroundColor: '#0277BD', color: '#fff', height: 30, width: 'max-content', textTransform: 'capitalize'}}>
                       View Profile
                     </Button>
                   </Link>

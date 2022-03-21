@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, TextField, Typography, Grid, Paper, Snackbar, CssBaseline, Slide } from '@material-ui/core';
+import { Button, TextField, Typography, Grid, Snackbar, CssBaseline, Slide } from '@material-ui/core';
 import { makeStyles, withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Link, useHistory, Redirect } from 'react-router-dom'
 import { gql, useMutation } from '@apollo/client';
@@ -7,9 +7,14 @@ import { TransitionProps } from '@material-ui/core/transitions';
 
 const ColorButton = withStyles((theme: Theme) => ({
   root: {
+    textTransform: 'capitalize',
+    height: 40,
+    borderRadius: 5,
+    boxShadow: 'none',
     color: theme.palette.getContrastText('#0e9170'),
     background: 'linear-gradient(152deg, #2193b0 0%, #6dd5ed 100%)',
     '&:hover': {
+      boxShadow: '2px 4px 6px #2193b060',
       backgroundColor: '#1a866b96',
     },
   },
@@ -48,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     paper: {
       padding: theme.spacing(2),
-      margin: "0px 30px",
+      margin: "0px 15px",
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -56,7 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
       minHeight: "100%"
     },
     image: {
-      backgroundImage: 'url("https://images.unsplash.com/photo-1530811761207-8d9d22f0a141?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80")',
+      backgroundImage: 'url("https://images.unsplash.com/photo-1526045612212-70caf35c14df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")',
       backgroundRepeat: 'no-repeat',
       backgroundColor:
         theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -173,7 +178,7 @@ const Login: React.FC = () => {
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
         <Grid item xs={false} sm={4} md={8} className={classes.image} />
-        <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={4}>
           <div className={classes.paper}>
             <div>
               <Typography component="h1" variant="h5">Login Here,</Typography>
@@ -202,7 +207,7 @@ const Login: React.FC = () => {
                   id="password"
                   onChange={onChangepass}
                 />
-                <Link to="/" style={{color: '#0083B0', textDecoration: 'none'}}>
+                <Link to="#" style={{color: '#0083B0', textDecoration: 'none'}}>
                     Forgot password?
                 </Link>
                 <ColorButton 
