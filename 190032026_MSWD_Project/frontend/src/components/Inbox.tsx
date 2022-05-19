@@ -6,7 +6,7 @@ import { Grid, Typography,
   TextField, DialogContent, Chip,
   DialogTitle, Slide, List, 
   ListItemSecondaryAction,
-  ListItemAvatar, ListItemText, Snackbar
+  ListItemAvatar, ListItemText, Snackbar, useTheme
 } from '@material-ui/core'
 import { useQuery, gql, useMutation } from '@apollo/client';
 import { makeStyles, createStyles, Theme, withStyles } from '@material-ui/core/styles';
@@ -93,7 +93,7 @@ interface StyledTabsProps {
 // tab styles
 const StyledTabs = withStyles({
   root: {
-    width: '450px',
+    // width: '450px',
   },
   indicator: {
     display: 'flex',
@@ -114,7 +114,6 @@ interface StyledTabProps {
 const StyledTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: 60,
       textTransform: 'none',
       color: theme.palette.text.primary,
       fontWeight: theme.typography.fontWeightRegular,
@@ -148,11 +147,11 @@ const useStyles = makeStyles((theme: Theme) =>
     listlink: {
       padding: 15,
       backdropFilter: 'blur(10px)',
-      border: `1px solid ${theme.palette.divider}`,
-      borderRadius: 10,
-      width: '90%',
+      borderTop: `1px solid ${theme.palette.divider}`,
+      // borderRadius: 10,
+      // width: '90%',
       // backgroundColor: theme.palette.type === 'dark' ? '#121212' : '#e2e2e250',
-      background: '#AED58110',
+      // background: '#AED58110',
       cursor: 'pointer',
       // marginBottom: 10,
     },
@@ -238,36 +237,17 @@ const Inbox: React.FC = () => {
   return (
     <div className={classes.root}>
       <Header />
-        <div style={{height: '90vh', marginTop: 70}}>
+        <div style={{maxHeight: '90vh', marginTop: 50}}>
           <StyledTabs value={value} onChange={handleChange} aria-label="styled tabs example">
             <StyledTab label="Chats" {...a11yProps(0)} />
             <StyledTab label="Groups" {...a11yProps(1)} />
           </StyledTabs>
-          {/* <ListItem className={classes.listlink}>
-            <StyledBadge badgeContent={data.retrieveChats.length}>
-              <Typography variant="h6" color="textPrimary" style={{fontWeight: 'bold'}}>Chats</Typography>
-            </StyledBadge>
-          </ListItem> */}
-          {/* <Divider /> */}
           <TabPanel value={value} index={0}>
             <Chats />
           </TabPanel>
           <TabPanel value={value} index={1}>
             <Groups handleDialogOpen={handleDialogOpen} />
           </TabPanel>
-        </div>
-        {/* <Divider orientation="vertical" flexItem style={{color:'#727272'}} /> */}
-        <div>
-          {/* <Button onClick={handleDialogOpen} style={{margin: 20, textTransform: "capitalize"}}>Create Group</Button> */}
-            {/* <MessageBox /> */}
-            {/* <Switch>
-              <Route exact path={path}>
-                <Typography color="textPrimary">Select a person to start messaging</Typography>
-              </Route>
-              <Route exact path={`${path}/:name`}>
-                <MessageBox />
-              </Route> 
-            </Switch>*/}
         </div>
 
       <Dialog
@@ -282,9 +262,6 @@ const Inbox: React.FC = () => {
       >
         <DialogTitle id="alert-dialog-slide-title">{"Create New Group"}</DialogTitle>
         <DialogContent>
-          {/* <DialogContentText id="alert-dialog-slide-description">
-            Create a new group with your friends
-          </DialogContentText> */}
           <CssTextField 
             placeholder="Enter Group Name..." 
             fullWidth
@@ -310,14 +287,6 @@ const Inbox: React.FC = () => {
             handleDialogCancel={handleDialogCancel}
           />
         </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleDialogClose} color="primary">
-            Ok
-          </Button>
-        </DialogActions> */}
       </Dialog>
     </div>
   )
@@ -468,9 +437,10 @@ const Chats: React.FC = (props: any) => {
     pollInterval: 500
   })
   const classes = useStyles();
+  const theme = useTheme();
   const [name, setName] = React.useState('')
   return(
-    <div  style={{maxHeight: "79vh"}}>
+    <div  style={{maxHeight: "100%"}}>
     { loading ? (
         <div style={{minHeight: "79vh", display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <CircularProgress size="30px" style={{color: '#AED581'}} />
@@ -480,7 +450,7 @@ const Chats: React.FC = (props: any) => {
         <p>{error.message}<Redirect to="/login" /></p>
       ) :
       data.retrieveChats.length === 0 ? (
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '83vh', flexDirection: 'column'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'column'}}>
           {/* <img src={noData} alt="" style={{height: 200, width: 350, opacity: 0.8}} /> */}
           <img src={emtInbox} alt="" style={{height: 120, width: 220, opacity: 0.8}} />
           <Typography style={{color: '#BDBDBD'}}>
@@ -492,27 +462,27 @@ const Chats: React.FC = (props: any) => {
         </div>
       ) :
       (
-        <Grid container alignItems="stretch" spacing={0}>
-          <Grid item xs={1}></Grid>
-          <Grid item xs={3} style={{height: '79vh', overflow: 'auto'}}>
+        <div style={{display: 'flex', flexDirection: 'row'}}>
+          {/* <Grid item xs={1}></Grid> */}
+          <Grid item xs={3} style={{height: '86vh', overflow: 'auto', borderRight: `1px solid ${theme.palette.divider}`,background: '#AED58110',}}>
         {data.retrieveChats.map((index: any) => (
-        <List>
+        <List style={{padding: 0}}>
         <ListItem key={index.id} className={classes.listlink} onClick={() => setName(index.persons[0] === currentUser ? index.persons[1] : index.persons[0])}>
         <Avatar>M</Avatar>
         <span style={{flexGrow: .07}}></span>
         <div>
-          <Typography color="textPrimary" style={{fontSize: 17}}>
+          <Typography variant='body1' color="textPrimary">
             {index.persons[0] === currentUser ? index.persons[1] : index.persons[0]}
           </Typography>
-          <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden'}}>
-            {index.chats.slice(-1)[0].message}
+          <Typography variant="body2" color="textSecondary" style={{overflow: 'hidden'}}>
+          <b>{index.persons[0] === currentUser ? "You: " : ""}</b> {index.chats.slice(-1)[0].message}
           </Typography>
         </div>
         </ListItem>
         {/* <Divider className={classes.divd} /> */}
         </List>
       ))}</Grid>
-      <Grid item xs={7}>
+      {/* <Grid item xs={8} style={{ borderTop: `1px solid ${theme.palette.divider}`,}}> */}
         <MessageBox name={name} />
         {/* <Switch>
           <Route exact path={path}>
@@ -520,8 +490,8 @@ const Chats: React.FC = (props: any) => {
           </Route>
           <Route exact path={`/inbox/${name}`} component={MessageBox} /> 
         </Switch> */}
-      </Grid>
-      </Grid>
+      {/* </Grid> */}
+      </div>
       )
     }
     </div>
@@ -541,6 +511,7 @@ const Groups: React.FC<Props> = (props: any) => {
   })
   const [groupId, setGroupId] = React.useState('')
   const classes = useStyles();
+  const theme = useTheme();
   
   return(
     <div>
@@ -553,7 +524,7 @@ const Groups: React.FC<Props> = (props: any) => {
         <p>{error.message}<Redirect to="/login" /></p>
       ) :
       data.retrieveGroups.length === 0 ? (
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '83vh', flexDirection: 'column', textAlign: 'center'}}>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'column'}}>
           {/* <img src={noData} alt="" style={{height: 200, width: 350, opacity: 0.8}} /> */}
           <img src={emtInbox} alt="" style={{height: 120, width: 220, opacity: 0.8}} />
           <Typography style={{color: '#BDBDBD'}}>
@@ -566,25 +537,24 @@ const Groups: React.FC<Props> = (props: any) => {
       ) :
       
       (
-        <Grid container spacing={0}>
+        <div style={{display: 'flex', flexDirection: 'row'}}>
         <Grid item xs={1}>
           <Button onClick={props.handleDialogOpen} style={{margin: 20, textTransform: "capitalize"}}>Create Group</Button>
         </Grid>
-        <Grid item xs={3} style={{height: '79vh', overflow: 'auto'}}>
+        <Grid item xs={3} style={{height: '86vh', overflow: 'auto', borderRight: `1px solid ${theme.palette.divider}`,background: '#AED58110',}}>
         {data.retrieveGroups.map((index: any) => (
-        <List>
-        
+        <List style={{padding: 0}}>
         <ListItem key={index.id} className={classes.listlink} onClick={() => setGroupId(index.id)} >
         <Avatar>{index.groupName.charAt(0).toUpperCase()}</Avatar>
         <span style={{flexGrow: .07}}></span>
         <div>
-          <Typography color="textPrimary" style={{fontSize: 17, overflow: 'hidden'}}>
+          <Typography variant='body1' color="textPrimary" style={{overflow: 'hidden'}}>
             {index.groupName}
           </Typography>
           {index.chats.length === 0 ? (
-            <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden', fontStyle: 'italic'}}>Start your Conversation</Typography>
+            <Typography variant="body2" color="textSecondary" style={{overflow: 'hidden', fontStyle: 'italic'}}>Start your Conversation</Typography>
             ) : (
-            <Typography color="textSecondary" style={{fontSize: 15, overflow: 'hidden'}}>
+            <Typography variant="body2" color="textSecondary" style={{overflow: 'hidden'}}>
               {index.chats.slice(-1)[0].sender}: {index.chats.slice(-1)[0].message}
             </Typography>
           )}
@@ -593,10 +563,10 @@ const Groups: React.FC<Props> = (props: any) => {
         </List>
       ))}
       </Grid>
-        <Grid item xs={7}>
-          <GroupMsgBox groupId={groupId} />
-        </Grid>
-      </Grid>
+        {/* <Grid item xs={7}> */}
+        <GroupMsgBox groupId={groupId} />
+        {/* </Grid> */}
+      </div>
       )
     }
     </div>

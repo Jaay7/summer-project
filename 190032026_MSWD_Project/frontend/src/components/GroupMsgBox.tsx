@@ -29,7 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
       minHeight: 'max-content',
-      margin: "0px 20px",
+      // margin: "0px 20px",
+      borderTop: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff'
     },
     inputRoot: {
@@ -53,9 +54,9 @@ const useStyles = makeStyles((theme: Theme) =>
       // },
     },
     chatbox: {
-      borderLeft: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
-      borderRight: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
-      minHeight: '83.5vh',
+      // borderLeft: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
+      // borderRight: theme.palette.type === 'dark' ? '1px solid #303030' : "1px solid #e2e2e2",
+      minHeight: '85vh',
       position: 'relative'
     },
     tabbar: {
@@ -331,7 +332,7 @@ const Transition = React.forwardRef(function Transition(
     // if (error) return <Redirect to="/login" />
     if (props.groupId === '' ) {
       return (
-        <div style={{height: '100%', width: '100%', display: 'grid', placeItems: 'center', margin: 20}}>
+        <div className={classes.root} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
           <Typography color="textPrimary">Select a person to start messaging</Typography>
         </div>
       )
@@ -339,9 +340,8 @@ const Transition = React.forwardRef(function Transition(
     return (
       <div className={classes.root}>
       {/* <Header /> */}
-      <Grid container spacing={0} style={{display: 'flex', justifyContent: 'center'}}>
-        <Grid item></Grid>
-        <Grid item xs={11}>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
           <div className={classes.chatbox}>
             <div className={classes.tabbar}>
               {/* <IconButton onClick={() => history.goBack()} style={{color: theme.palette.type === 'dark' ? '#fff': '#000', padding: 8}}>
