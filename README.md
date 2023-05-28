@@ -8,7 +8,7 @@ https://summer-project.vercel.app/
 
 Used Heroku to deploy the backend of the project.
 
-https://msg-app-backend.herokuapp.com/graphql
+https://message-app-apis.onrender.com/graphql
 
 ## To run this project
 
