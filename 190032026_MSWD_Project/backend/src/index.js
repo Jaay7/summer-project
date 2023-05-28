@@ -20,7 +20,7 @@ const startServer = async() => {
     resolvers,
     context: ({req, res}) => ({req, res}),
   });
-  
+  await server.start();
   server.applyMiddleware({ app });
 
   await mongoose.connect(MONGODB_URI, {
