@@ -1,83 +1,112 @@
-import React from 'react'
-import { Button, TextField, Typography, Grid, Snackbar, CssBaseline, Slide } from '@material-ui/core';
-import { makeStyles, withStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Link, useHistory, Redirect } from 'react-router-dom'
-import { gql, useMutation } from '@apollo/client';
-import { TransitionProps } from '@material-ui/core/transitions';
+import React from "react";
+import {
+  Button,
+  TextField,
+  Typography,
+  Grid,
+  Snackbar,
+  CssBaseline,
+  Slide,
+  CircularProgress,
+} from "@material-ui/core";
+import {
+  makeStyles,
+  withStyles,
+  createStyles,
+  Theme,
+  useTheme,
+} from "@material-ui/core/styles";
+import { Link, useHistory, Redirect } from "react-router-dom";
+import { gql, useMutation } from "@apollo/client";
+import { TransitionProps } from "@material-ui/core/transitions";
+import ClayPurple from "../images/Clay_Purple.png";
 
 const ColorButton = withStyles((theme: Theme) => ({
   root: {
-    textTransform: 'capitalize',
+    textTransform: "capitalize",
     height: 40,
-    borderRadius: 5,
-    boxShadow: 'none',
-    color: theme.palette.getContrastText('#0e9170'),
-    background: 'linear-gradient(152deg, #2193b0 0%, #6dd5ed 100%)',
-    '&:hover': {
-      boxShadow: '2px 4px 6px #2193b060',
-      backgroundColor: '#1a866b96',
+    borderRadius: 8,
+    boxShadow: "none",
+    color: theme.palette.getContrastText("#0e9170"),
+    backgroundColor: "#673AB7",
+    "&:hover": {
+      backgroundColor: "#7E57C2",
     },
   },
 }))(Button);
 
-const CssTextField = withStyles({
+const CssTextField = withStyles((theme: Theme) => ({
   root: {
-    '& label.Mui-focused': {
-      color: '#1890ff',
+    "& label.Mui-focused": {
+      color: theme.palette.type === "light" ? "#673AB7" : "#9575CD",
     },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#1890ff',
+    "& .MuiInput-underline:after": {
+      borderBottomColor: theme.palette.type === "light" ? "#673AB7" : "#9575CD",
     },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-focused fieldset': {
-        borderColor: '#1890ff',
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 8,
+      "&.Mui-focused fieldset": {
+        borderColor: theme.palette.type === "light" ? "#673AB7" : "#9575CD",
       },
     },
   },
-})(TextField);
+}))(TextField);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     main: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      backgroundColor: theme.palette.type === 'dark' ? '#111111' : '#fff'
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      // height: "100vh",
+      backgroundColor: theme.palette.type === "dark" ? "#111111" : "#fff",
     },
     root: {
       // flexGrow: 1,
-      height: '70vh',
-      width: '80%',
+      minHeight: "100vh",
+      // width: "80%",
+      // padding: theme.spacing(2),
     },
     paper: {
       padding: theme.spacing(2),
       margin: "0px 15px",
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: "100%"
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      height: "100%",
+    },
+    imageGrid: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.palette.type === "light" ? "#bcadd4" : "#45404e",
+      // backgroundSize: "cover",
+      // backgroundPosition: "center",
     },
     image: {
-      backgroundImage: 'url("https://images.unsplash.com/photo-1526045612212-70caf35c14df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80")',
-      backgroundRepeat: 'no-repeat',
-      backgroundColor:
-        theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      [theme.breakpoints.down("sm")]: {
+        height: "400px",
+      },
+      [theme.breakpoints.down("xs")]: {
+        height: "300px",
+      },
     },
     form: {
-      width: '100%', 
-      marginTop: theme.spacing(1),
-      alignSelf: 'center'
+      width: "300px",
+      // marginTop: theme.spacing(1),
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
   })
-)
+);
 
 // interface user {
 //   id: number;
@@ -102,34 +131,36 @@ function SlideTransition(props: TransitionProps) {
 }
 
 const USER_LOGIN = gql`
-mutation LoginUser($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
-    user {
-      id
-      name
-      username
-      email
+  mutation LoginUser($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      user {
+        id
+        name
+        username
+        email
+      }
+      token
+      refreshToken
     }
-    token
-    refreshToken
   }
-}
 `;
-
 
 const Login: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory()
-  const [ username, setUsername ] = React.useState('');
-  const [password, setPassword ] = React.useState('');
+  const history = useHistory();
+  const theme = useTheme();
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const [state, setState] = React.useState<{
     open: boolean;
     message: string;
-    Transition: React.ComponentType<TransitionProps & { children?: React.ReactElement<any, any> }>;
+    Transition: React.ComponentType<
+      TransitionProps & { children?: React.ReactElement<any, any> }
+    >;
   }>({
     open: false,
-    message: '',
+    message: "",
     Transition: Slide,
   });
 
@@ -141,103 +172,155 @@ const Login: React.FC = () => {
   };
   const onChangeuser = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
-  }
+  };
   const onChangepass = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
-  }
+  };
 
-  const [LoginUser, { error, data }] = useMutation( USER_LOGIN )
+  const [LoginUser, { error, loading, data }] = useMutation(USER_LOGIN);
   // if (localStorage.getItem('token') !== undefined) {
   //   return <Redirect to="/" />
   // }
-  const onSubmit = async() => {
-    const response = await LoginUser({
-      variables: { username: username, password: password }
+  const onSubmit = async () => {
+    await LoginUser({
+      variables: { username: username, password: password },
     })
-    if(error) {
-      // console.log(error)
-      setState({open: true, Transition: SlideTransition, message: error.message})
-    } else{
-      console.log(data?.token);
-      let token = response.data.login.token
-      let username = response.data.login.user.username
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', username);
-      history.push("/");
-    }
-  }
+      .then((response) => {
+        console.log(response.data.login.token);
+        let token = response.data.login.token;
+        let username = response.data.login.user.username;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", username);
+        setState({
+          open: true,
+          Transition: SlideTransition,
+          message: "Login success!",
+        });
+        history.push("/");
+      })
+      .catch((error) => {
+        console.log(error);
+        setState({
+          open: true,
+          Transition: SlideTransition,
+          message: error.message,
+        });
+      });
+    //   if (error) {
+    //     // console.log(error)
+    //     setState({
+    //       open: true,
+    //       Transition: SlideTransition,
+    //       message: error.message,
+    //     });
+    //   } else {
+
+    //   }
+  };
 
   return (
     <div className={classes.main}>
-      { localStorage.getItem('token') !== undefined && localStorage.getItem('token') !== null ? (
+      {localStorage.getItem("token") !== undefined &&
+      localStorage.getItem("token") !== null ? (
         <>
-        <Typography>You are already loggedin</Typography>
-        <Redirect to="/" />
+          <Typography>You are already loggedin</Typography>
+          <Redirect to="/" />
         </>
       ) : (
-      <Grid container component="main" className={classes.root}>
-        <CssBaseline />
-        <Grid item xs={false} sm={4} md={8} className={classes.image} />
-        <Grid item xs={12} sm={8} md={4}>
-          <div className={classes.paper}>
-            <div>
-              <Typography component="h1" variant="h5">Login Here,</Typography>
-              <div className={classes.form}>
-                <CssTextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  type="text"
-                  size="small"
-                  onChange={onChangeuser}
-                />
-                <CssTextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  size="small"
-                  type="password"
-                  id="password"
-                  onChange={onChangepass}
-                />
-                <Link to="#" style={{color: '#0083B0', textDecoration: 'none'}}>
+        <Grid container component="main" className={classes.root}>
+          <CssBaseline />
+          <Grid item xs={12} sm={6} md={6} className={classes.imageGrid}>
+            <img src={ClayPurple} alt="" className={classes.image} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={6}>
+            <div className={classes.paper}>
+              <div>
+                <Typography component="h1" variant="h5">
+                  Welcome back!
+                </Typography>
+                <div className={classes.form}>
+                  <CssTextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    type="text"
+                    size="small"
+                    onChange={onChangeuser}
+                  />
+                  <CssTextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    size="small"
+                    onChange={onChangepass}
+                  />
+                  <Link
+                    to="#"
+                    style={{
+                      color:
+                        theme.palette.type === "light" ? "#673AB7" : "#9575CD",
+                      textDecoration: "none",
+                      alignSelf: "flex-end",
+                    }}
+                  >
                     Forgot password?
-                </Link>
-                <ColorButton 
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={onSubmit}
-                >
-                  <Typography style={{ textDecoration: 'none', color: '#fff'}}>Login</Typography>
-                </ColorButton >
-                <Grid container>
-                  <Grid item xs>
-                    
-                  </Grid>
-                  <Grid item>
-                    <Link to="/signup" style={{color: '#0083B0'}}>
-                      Don't have an account? Sign Up
-                    </Link>
-                  </Grid>
-                </Grid>
+                  </Link>
+                  <ColorButton
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    className={classes.submit}
+                    onClick={onSubmit}
+                  >
+                    {loading ? (
+                      <CircularProgress size={28} color="inherit" />
+                    ) : (
+                      <Typography
+                        style={{ textDecoration: "none", color: "#fff" }}
+                      >
+                        Login
+                      </Typography>
+                    )}
+                  </ColorButton>
+                  <Link
+                    to="/signup"
+                    style={{
+                      textDecoration: "none",
+                      color:
+                        theme.palette.type === "light" ? "#101010" : "#f1f1f1",
+                    }}
+                  >
+                    Don't have an account?{" "}
+                    <span
+                      style={{
+                        color:
+                          theme.palette.type === "light"
+                            ? "#673AB7"
+                            : "#9575CD",
+                      }}
+                    >
+                      Sign up
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          </Grid>
         </Grid>
-      </Grid>)}
+      )}
       <Snackbar
         open={state.open}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         onClose={handleClose}
         autoHideDuration={2500}
         TransitionComponent={state.Transition}
@@ -245,7 +328,7 @@ const Login: React.FC = () => {
         key={state.Transition.name}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
