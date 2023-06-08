@@ -514,7 +514,6 @@ const GroupMsgBox = (props: any) => {
       <Drawer
         open={drawerOpen}
         anchor="right"
-        variant="persistent"
         className={classes.drawer}
         onClose={handleDrawerClose}
       >
