@@ -14,7 +14,6 @@ import {
   Button,
   Typography,
   CircularProgress,
-  Card,
   List,
   ListItem,
   ListItemAvatar,
@@ -61,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%",
       flexDirection: "column",
       justifyContent: "center",
+      padding: theme.spacing(2),
     },
   })
 );
@@ -126,7 +126,7 @@ const Search: React.FC = () => {
           <br></br>
           {loading ? (
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <CircularProgress size="30px" style={{ color: "#0277BD" }} />
+              <CircularProgress size="30px" style={{ color: "#4527A0" }} />
             </div>
           ) : error ? (
             <>{error.message}</>

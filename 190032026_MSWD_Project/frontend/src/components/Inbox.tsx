@@ -1,14 +1,10 @@
 import React from "react";
-import Header from "./Header";
 import {
   Grid,
   Typography,
   Button,
   ListItem,
   Avatar,
-  Tabs,
-  Tab,
-  Box,
   IconButton,
   Dialog,
   TextField,
@@ -22,6 +18,7 @@ import {
   ListItemText,
   Snackbar,
   useTheme,
+  Hidden,
 } from "@material-ui/core";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import {
@@ -31,13 +28,11 @@ import {
   withStyles,
 } from "@material-ui/core/styles";
 import { Link, Redirect } from "react-router-dom";
-// import MessageBox from './MessageBox';
 import { CircularProgress } from "@material-ui/core";
-import emtInbox from "../images/emtInbox.svg";
 import { TransitionProps } from "@material-ui/core/transitions";
-import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import MessageBox from "./MessageBox";
 import GroupMsgBox from "./GroupMsgBox";
+import { HowToRegRounded, PersonAddRounded } from "@material-ui/icons";
 
 // badge styles
 // const StyledBadge = withStyles((theme: Theme) =>
@@ -72,83 +67,6 @@ const CssTextField = withStyles({
   },
 })(TextField);
 
-// tab panel
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: any) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-interface StyledTabsProps {
-  value: number;
-  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void;
-}
-
-// tab styles
-const StyledTabs = withStyles({
-  root: {
-    // width: '450px',
-  },
-  indicator: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    "& > span": {
-      maxWidth: 70,
-      width: "100%",
-      backgroundColor: "#AED581",
-    },
-  },
-})((props: StyledTabsProps) => (
-  <Tabs {...props} centered TabIndicatorProps={{ children: <span /> }} />
-));
-
-interface StyledTabProps {
-  label: string;
-}
-
-const StyledTab = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      textTransform: "none",
-      color: theme.palette.text.primary,
-      fontWeight: theme.typography.fontWeightRegular,
-      fontSize: theme.typography.pxToRem(16),
-      marginRight: theme.spacing(1),
-      "&:focus": {
-        opacity: 1,
-        fontWeight: theme.typography.fontWeightMedium,
-      },
-    },
-  })
-)((props: StyledTabProps) => <Tab disableRipple {...props} />);
-
 function SlideTransition(props: TransitionProps) {
   return <Slide {...props} direction="up" />;
 }
@@ -167,13 +85,14 @@ const useStyles = makeStyles((theme: Theme) =>
       // borderRight: `1px solid ${theme.palette.divider}`,
     },
     listlink: {
-      padding: 15,
-      backdropFilter: "blur(10px)",
+      // padding: 15,
+      // backdropFilter: "blur(10px)",
       // borderRadius: 10,
       // width: '90%',
       // backgroundColor: theme.palette.type === 'dark' ? '#121212' : '#e2e2e250',
       // background: '#AED58110',
       cursor: "pointer",
+      paddingRight: 0,
       // marginBottom: 10,
     },
     root: {
@@ -257,7 +176,7 @@ const Inbox: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Chats />
+      <Chats handleDialogOpen={handleDialogOpen} />
       {/* <div style={{ maxHeight: "90vh" }}>
         <StyledTabs
           value={value}
@@ -453,7 +372,11 @@ const SearchUsers = (props: any) => {
                       onClick={() => handleSelect(index.username)}
                     >
                       <IconButton>
-                        <PersonAddOutlinedIcon />
+                        {state.includes(index.username) ? (
+                          <HowToRegRounded style={{ color: "#673AB7" }} />
+                        ) : (
+                          <PersonAddRounded />
+                        )}
                       </IconButton>
                       {/* <Button>Add</Button> */}
                     </ListItemSecondaryAction>
@@ -466,13 +389,13 @@ const SearchUsers = (props: any) => {
       <div style={{ bottom: 10, alignSelf: "flex-end", position: "absolute" }}>
         <Button
           onClick={handleCancel}
-          style={{ color: "#AED581", marginRight: 15 }}
+          style={{ color: "#673AB7", marginRight: 15 }}
         >
           Cancel
         </Button>
         <Button
           onClick={handleOk}
-          style={{ backgroundColor: "#AED581", color: "#000" }}
+          style={{ backgroundColor: "#673AB7", color: "#fff" }}
         >
           Ok
         </Button>
@@ -490,8 +413,12 @@ const SearchUsers = (props: any) => {
   );
 };
 
+interface Props {
+  handleDialogOpen: any;
+}
+
 // chats tab
-const Chats: React.FC = (props: any) => {
+const Chats: React.FC<Props> = (props: any) => {
   let currentUser = localStorage.getItem("user");
   const { loading, error, data } = useQuery(ALL_CHATS, {
     variables: { currentUser: currentUser },
@@ -511,10 +438,11 @@ const Chats: React.FC = (props: any) => {
   const theme = useTheme();
   const [name, setName] = React.useState("");
   const [groupId, setGroupId] = React.useState("");
+  const [selectedChat, setSelectedChat] = React.useState("");
 
   return (
     <div style={{ maxHeight: "100%" }}>
-      {loading ? (
+      {loading || loading2 ? (
         <div
           style={{
             minHeight: "79vh",
@@ -523,7 +451,7 @@ const Chats: React.FC = (props: any) => {
             alignItems: "center",
           }}
         >
-          <CircularProgress size="30px" style={{ color: "#AED581" }} />
+          <CircularProgress size="30px" style={{ color: "#4527A0" }} />
         </div>
       ) : error ? (
         <p>
@@ -535,32 +463,6 @@ const Chats: React.FC = (props: any) => {
           {error2.message}
           <Redirect to="/login" />
         </p>
-      ) : data.retrieveChats.length === 0 ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            flexDirection: "column",
-          }}
-        >
-          {/* <img src={noData} alt="" style={{height: 200, width: 350, opacity: 0.8}} /> */}
-          <img
-            src={emtInbox}
-            alt=""
-            style={{ height: 120, width: 220, opacity: 0.8 }}
-          />
-          <Typography style={{ color: "#BDBDBD" }}>
-            Oh no! Your inbox is empty
-          </Typography>
-          <Typography style={{ color: "#BDBDBD" }}>
-            Click here to search for people{" "}
-            <Link to="/" style={{ color: "#AED581" }}>
-              Search
-            </Link>
-          </Typography>
-        </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "row" }}>
           {/* <Grid item xs={1}></Grid> */}
@@ -568,49 +470,109 @@ const Chats: React.FC = (props: any) => {
             item
             xs={3}
             style={{
-              height: "86vh",
+              height: "100vh",
               overflow: "auto",
               background: theme.palette.background.paper,
+              // padding: 10,
+              borderRight: `1px solid ${theme.palette.divider}`,
+              // borderRadius: 8
             }}
           >
-            <Typography>Chats</Typography>
-            {data.retrieveChats.map((index: any) => (
-              <List style={{ padding: 0 }}>
-                <ListItem
-                  key={index.id}
-                  className={classes.listlink}
-                  onClick={() => {
-                    setName(
-                      index.persons[0] === currentUser
-                        ? index.persons[1]
-                        : index.persons[0]
-                    );
-                    setGroupId("");
-                  }}
+            <Typography
+              style={{
+                fontWeight: 600,
+                padding: 10,
+                fontSize: 18,
+                color: theme.palette.type === "light" ? "#4527A0" : "#EDE7F6",
+              }}
+            >
+              Chats
+            </Typography>
+            {data.retrieveChats.length === 0 ? (
+              <>
+                <Typography>No chats found</Typography>
+                <Typography style={{ color: "#BDBDBD" }}>
+                  Click here to search for people{" "}
+                  <Link to="/" style={{ color: "#AED581" }}>
+                    Search
+                  </Link>
+                </Typography>
+              </>
+            ) : (
+              data.retrieveChats.map((index: any) => (
+                <List style={{ padding: 0 }}>
+                  <ListItem
+                    key={index.id}
+                    className={classes.listlink}
+                    onClick={() => {
+                      setName(
+                        index.persons[0] === currentUser
+                          ? index.persons[1]
+                          : index.persons[0]
+                      );
+                      setSelectedChat(index.id);
+                      setGroupId("");
+                    }}
+                    selected={selectedChat === index.id}
+                  >
+                    <ListItemAvatar>
+                      <Avatar>
+                        {index.persons[0] === currentUser
+                          ? index.persons[1].charAt(0).toUpperCase()
+                          : index.persons[0].charAt(0).toUpperCase()}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <Hidden xsDown implementation="css">
+                      <ListItemText
+                        primary={
+                          index.persons[0] === currentUser
+                            ? index.persons[1]
+                            : index.persons[0]
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              variant="body2"
+                              component={"span"}
+                              // style={{ overflow: "hidden" }}
+                            >
+                              <b>
+                                {index.persons[0] === currentUser
+                                  ? "You: "
+                                  : ""}
+                              </b>{" "}
+                              {index.chats.slice(-1)[0].message}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                    </Hidden>
+                  </ListItem>
+                  {/* <Divider className={classes.divd} /> */}
+                </List>
+              ))
+            )}
+            <Typography
+              style={{
+                fontWeight: 600,
+                padding: 10,
+                fontSize: 18,
+                color: theme.palette.type === "light" ? "#4527A0" : "#EDE7F6",
+              }}
+            >
+              Groups
+            </Typography>
+            {data2.retrieveGroups.length === 0 ? (
+              <div style={{ padding: 10 }}>
+                <Typography>No groups found</Typography>
+                <Button
+                  onClick={props.handleDialogOpen}
+                  style={{ marginTop: 20, textTransform: "capitalize" }}
                 >
-                  <Avatar>M</Avatar>
-                  <span style={{ flexGrow: 0.07 }}></span>
-                  <div>
-                    <Typography variant="body1" color="textPrimary">
-                      {index.persons[0] === currentUser
-                        ? index.persons[1]
-                        : index.persons[0]}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      style={{ overflow: "hidden" }}
-                    >
-                      <b>{index.persons[0] === currentUser ? "You: " : ""}</b>{" "}
-                      {index.chats.slice(-1)[0].message}
-                    </Typography>
-                  </div>
-                </ListItem>
-                {/* <Divider className={classes.divd} /> */}
-              </List>
-            ))}
-            <Typography>Groups</Typography>
-            {data2.retrieveGroups.length >= 0 &&
+                  Create Group
+                </Button>
+              </div>
+            ) : (
               data2.retrieveGroups.map((index: any) => (
                 <List style={{ padding: 0 }}>
                   <ListItem
@@ -618,41 +580,44 @@ const Chats: React.FC = (props: any) => {
                     className={classes.listlink}
                     onClick={() => {
                       setGroupId(index.id);
+                      setSelectedChat(index.id);
                       setName("");
                     }}
+                    selected={selectedChat === index.id}
                   >
-                    <Avatar>{index.groupName.charAt(0).toUpperCase()}</Avatar>
-                    <span style={{ flexGrow: 0.07 }}></span>
-                    <div>
-                      <Typography
-                        variant="body1"
-                        color="textPrimary"
-                        style={{ overflow: "hidden" }}
-                      >
-                        {index.groupName}
-                      </Typography>
-                      {index.chats.length === 0 ? (
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ overflow: "hidden", fontStyle: "italic" }}
-                        >
-                          Start your Conversation
-                        </Typography>
-                      ) : (
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          style={{ overflow: "hidden" }}
-                        >
-                          {index.chats.slice(-1)[0].sender}:{" "}
-                          {index.chats.slice(-1)[0].message}
-                        </Typography>
-                      )}
-                    </div>
+                    <ListItemAvatar>
+                      <Avatar>{index.groupName.charAt(0).toUpperCase()}</Avatar>
+                    </ListItemAvatar>
+                    <Hidden xsDown implementation="css">
+                      <ListItemText
+                        primary={index.groupName}
+                        secondary={
+                          index.chats.length === 0 ? (
+                            <React.Fragment>
+                              <Typography
+                                variant="body2"
+                                style={{
+                                  fontStyle: "italic",
+                                }}
+                              >
+                                Start your Conversation
+                              </Typography>
+                            </React.Fragment>
+                          ) : (
+                            <React.Fragment>
+                              <Typography variant="body2">
+                                {index.chats.slice(-1)[0].sender}:{" "}
+                                {index.chats.slice(-1)[0].message}
+                              </Typography>
+                            </React.Fragment>
+                          )
+                        }
+                      />
+                    </Hidden>
                   </ListItem>
                 </List>
-              ))}
+              ))
+            )}
           </Grid>
           {/* <Grid item xs={8} style={{ borderTop: `1px solid ${theme.palette.divider}`,}}> */}
           {name !== "" ? (
@@ -675,123 +640,119 @@ const Chats: React.FC = (props: any) => {
   );
 };
 
-interface Props {
-  handleDialogOpen: any;
-}
-
 //groups tab
-const Groups: React.FC<Props> = (props: any) => {
-  let currentUser = localStorage.getItem("user");
-  const { loading, error, data } = useQuery(ALL_GROUPS, {
-    variables: { currentUser: currentUser },
-    pollInterval: 500,
-  });
-  const [groupId, setGroupId] = React.useState("");
-  const classes = useStyles();
-  const theme = useTheme();
+// const Groups: React.FC<Props> = (props: any) => {
+//   let currentUser = localStorage.getItem("user");
+//   const { loading, error, data } = useQuery(ALL_GROUPS, {
+//     variables: { currentUser: currentUser },
+//     pollInterval: 500,
+//   });
+//   const [groupId, setGroupId] = React.useState("");
+//   const classes = useStyles();
+//   const theme = useTheme();
 
-  return (
-    <div>
-      {loading ? (
-        <div
-          style={{
-            minHeight: "79vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress size="30px" style={{ color: "#AED581" }} />
-        </div>
-      ) : error ? (
-        <p>
-          {error.message}
-          <Redirect to="/login" />
-        </p>
-      ) : data.retrieveGroups.length === 0 ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            flexDirection: "column",
-          }}
-        >
-          {/* <img src={noData} alt="" style={{height: 200, width: 350, opacity: 0.8}} /> */}
-          <img
-            src={emtInbox}
-            alt=""
-            style={{ height: 120, width: 220, opacity: 0.8 }}
-          />
-          <Typography style={{ color: "#BDBDBD" }}>
-            Oh no! Your inbox is empty
-          </Typography>
-          <Button
-            onClick={props.handleDialogOpen}
-            style={{ margin: 20, textTransform: "capitalize" }}
-          >
-            Create Group
-          </Button>
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "row" }}>
-          <Grid item xs={1}></Grid>
-          <Grid
-            item
-            xs={3}
-            style={{
-              height: "86vh",
-              overflow: "auto",
-              borderRight: `1px solid ${theme.palette.divider}`,
-              background: "#AED58110",
-            }}
-          >
-            {data.retrieveGroups.map((index: any) => (
-              <List style={{ padding: 0 }}>
-                <ListItem
-                  key={index.id}
-                  className={classes.listlink}
-                  onClick={() => setGroupId(index.id)}
-                >
-                  <Avatar>{index.groupName.charAt(0).toUpperCase()}</Avatar>
-                  <span style={{ flexGrow: 0.07 }}></span>
-                  <div>
-                    <Typography
-                      variant="body1"
-                      color="textPrimary"
-                      style={{ overflow: "hidden" }}
-                    >
-                      {index.groupName}
-                    </Typography>
-                    {index.chats.length === 0 ? (
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        style={{ overflow: "hidden", fontStyle: "italic" }}
-                      >
-                        Start your Conversation
-                      </Typography>
-                    ) : (
-                      <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        style={{ overflow: "hidden" }}
-                      >
-                        {index.chats.slice(-1)[0].sender}:{" "}
-                        {index.chats.slice(-1)[0].message}
-                      </Typography>
-                    )}
-                  </div>
-                </ListItem>
-              </List>
-            ))}
-          </Grid>
-          {/* <Grid item xs={7}> */}
-          <GroupMsgBox groupId={groupId} />
-          {/* </Grid> */}
-        </div>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       {loading ? (
+//         <div
+//           style={{
+//             minHeight: "79vh",
+//             display: "flex",
+//             justifyContent: "center",
+//             alignItems: "center",
+//           }}
+//         >
+//           <CircularProgress size="30px" style={{ color: "#AED581" }} />
+//         </div>
+//       ) : error ? (
+//         <p>
+//           {error.message}
+//           <Redirect to="/login" />
+//         </p>
+//       ) : data.retrieveGroups.length === 0 ? (
+//         <div
+//           style={{
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             height: "100%",
+//             flexDirection: "column",
+//           }}
+//         >
+//           {/* <img src={noData} alt="" style={{height: 200, width: 350, opacity: 0.8}} /> */}
+//           <img
+//             src={emtInbox}
+//             alt=""
+//             style={{ height: 120, width: 220, opacity: 0.8 }}
+//           />
+//           <Typography style={{ color: "#BDBDBD" }}>
+//             Oh no! Your inbox is empty
+//           </Typography>
+//           <Button
+//             onClick={props.handleDialogOpen}
+//             style={{ margin: 20, textTransform: "capitalize" }}
+//           >
+//             Create Group
+//           </Button>
+//         </div>
+//       ) : (
+//         <div style={{ display: "flex", flexDirection: "row" }}>
+//           <Grid item xs={1}></Grid>
+//           <Grid
+//             item
+//             xs={3}
+//             style={{
+//               height: "86vh",
+//               overflow: "auto",
+//               borderRight: `1px solid ${theme.palette.divider}`,
+//               background: "#AED58110",
+//             }}
+//           >
+//             {data.retrieveGroups.map((index: any) => (
+//               <List style={{ padding: 0 }}>
+//                 <ListItem
+//                   key={index.id}
+//                   className={classes.listlink}
+//                   onClick={() => setGroupId(index.id)}
+//                 >
+//                   <Avatar>{index.groupName.charAt(0).toUpperCase()}</Avatar>
+//                   <span style={{ flexGrow: 0.07 }}></span>
+//                   <div>
+//                     <Typography
+//                       variant="body1"
+//                       color="textPrimary"
+//                       style={{ overflow: "hidden" }}
+//                     >
+//                       {index.groupName}
+//                     </Typography>
+//                     {index.chats.length === 0 ? (
+//                       <Typography
+//                         variant="body2"
+//                         color="textSecondary"
+//                         style={{ overflow: "hidden", fontStyle: "italic" }}
+//                       >
+//                         Start your Conversation
+//                       </Typography>
+//                     ) : (
+//                       <Typography
+//                         variant="body2"
+//                         color="textSecondary"
+//                         style={{ overflow: "hidden" }}
+//                       >
+//                         {index.chats.slice(-1)[0].sender}:{" "}
+//                         {index.chats.slice(-1)[0].message}
+//                       </Typography>
+//                     )}
+//                   </div>
+//                 </ListItem>
+//               </List>
+//             ))}
+//           </Grid>
+//           {/* <Grid item xs={7}> */}
+//           <GroupMsgBox groupId={groupId} />
+//           {/* </Grid> */}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };

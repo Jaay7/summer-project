@@ -14,7 +14,7 @@ import {
   Card,
 } from "@material-ui/core";
 import Header from "./Header";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, createStyles, useTheme } from "@material-ui/core/styles";
 import { useParams, Redirect } from "react-router-dom";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { TransitionProps } from "@material-ui/core/transitions";
@@ -24,25 +24,28 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: "100%",
       minHeight: "100vh",
-      backgroundColor: theme.palette.type === "dark" ? "#111111" : "#fff",
+      // backgroundColor: theme.palette.type === "dark" ? "#111111" : "#fff",
     },
-    leftContainer: {
-      height: "60vh",
+    container: {
       width: "100%",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
+      padding: theme.spacing(2),
+      [theme.breakpoints.down('sm')]: {
+        marginTop: 50
+      }
     },
     boxes: {
       padding: "10px 20px",
       backdropFilter: "blur(10px)",
       // border: `1px solid ${theme.palette.divider}`,
-      boxShadow: "3px 3px 8px #0000002a",
       borderRadius: 10,
       width: "90%",
       background: "#AED58110",
       display: "inline-block",
-      marginBottom: "20px",
+      marginBottom: 10,
+      maxWidth: 240
     },
   })
 );
@@ -93,6 +96,7 @@ const SEND_MSG = gql`
 const OthersProfile: React.FC = () => {
   let { otherUser } = useParams<user>();
   const classes = useStyles();
+  const theme = useTheme();
   const { loading, error, data } = useQuery(OTHER_USER, {
     variables: { username: otherUser },
     pollInterval: 500,
@@ -160,80 +164,71 @@ const OthersProfile: React.FC = () => {
         </>
       ) : (
         <>
-          <Grid container spacing={0} style={{ marginTop: 70 }}>
-            <Grid item xs={1}></Grid>
-            <Grid item xs={3}>
-              <div className={classes.leftContainer}>
+              <div className={classes.container}>
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    marginBottom: 10
                   }}
                 >
                   <Typography
-                    gutterBottom
-                    variant="h5"
-                    color="textPrimary"
-                    style={{ textTransform: "capitalize" }}
+                    style={{
+                      fontWeight: 600,
+                      padding: 10,
+                      fontSize: 18,
+                    }}
                   >
                     {data.otherUser.username}'s profile
                   </Typography>
-                  <Button
-                    variant="outlined"
+                  <Typography
                     onClick={handleDialogOpen}
+                    variant="body2"
                     style={{
-                      backgroundColor: "#81C784",
-                      color: "#fff",
-                      height: 35,
+                      color: theme.palette.type === "light" ? "#4527A0" : "#EDE7F6",
                       textTransform: "capitalize",
+                      cursor: "pointer",
+                      marginLeft: 8
                     }}
                   >
                     Send Message
-                  </Button>
+                  </Typography>
                 </div>
-                <span style={{ flexGrow: 0.2 }}></span>
                 <Card
-                  elevation={4}
-                  variant="elevation"
+                  variant="outlined"
                   className={classes.boxes}
                 >
-                  <Typography style={{ fontSize: 20 }} color="textPrimary">
+                  <Typography variant="body2" color="textPrimary">
                     Name
                   </Typography>
-                  <Typography color="textSecondary">
+                  <Typography variant="body1" color="textSecondary">
                     {data.otherUser.name}
                   </Typography>
                 </Card>
                 <Card
-                  elevation={4}
-                  variant="elevation"
+                  variant="outlined"
                   className={classes.boxes}
                 >
-                  <Typography style={{ fontSize: 20 }} color="textPrimary">
+                  <Typography variant="body2" color="textPrimary">
                     Username
                   </Typography>
-                  <Typography color="textSecondary">
+                  <Typography variant="body1" color="textSecondary">
                     {data.otherUser.username}
                   </Typography>
                 </Card>
                 <Card
-                  elevation={4}
-                  variant="elevation"
+                  variant="outlined"
                   className={classes.boxes}
                 >
-                  <Typography style={{ fontSize: 20 }} color="textPrimary">
+                  <Typography variant="body2" color="textPrimary">
                     Email
                   </Typography>
-                  <Typography color="textSecondary">
+                  <Typography variant="body1" color="textSecondary">
                     {data.otherUser.email}
                   </Typography>
                 </Card>
               </div>
-            </Grid>
-            <Grid item xs={5}></Grid>
-            <Grid item xs={3}></Grid>
-          </Grid>
           <Dialog
             open={dialogOpen}
             TransitionComponent={Transition}

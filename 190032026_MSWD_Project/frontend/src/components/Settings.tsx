@@ -17,7 +17,6 @@ import {
   createStyles,
   withStyles,
 } from "@material-ui/core/styles";
-import Header from "./Header";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import EditRoundedIcon from "@material-ui/icons/EditRounded";
 import { WbSunnyRounded, NightsStayRounded } from "@material-ui/icons";
@@ -121,8 +120,8 @@ function a11yProps(index: any) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      minHeight: "100vh",
-      backgroundColor: theme.palette.type === "dark" ? "#111111" : "#fff",
+      // minHeight: "100vh",
+      // backgroundColor: theme.palette.type === "dark" ? "#111111" : "#fff",
     },
     buttons: {
       backgroundColor: "#D32F2F",
@@ -133,30 +132,22 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     tabs: {
       borderRight: `1px solid ${theme.palette.divider}`,
-      minHeight: "70vh",
+      height: "80vh",
       // backgroundColor: '#f1f1f1',
       paddingTop: 40,
     },
     main: {
-      flexGrow: 1,
+      // flexGrow: 1,
       // backgroundColor: theme.palette.background.paper,
-      minHeight: "88vh",
-      border:
-        theme.palette.type === "light"
-          ? "1px solid #e2e2e2"
-          : "1px solid #464646",
-      borderTop: "none",
-      borderBottom: "none",
+      height: "95vh",
     },
     container: {
-      flexGrow: 1,
       display: "flex",
-      minHeight: "80vh",
+      height: "100%",
+      padding: theme.spacing(2),
     },
     editDetails: {
       display: "flex",
-      flexGrow: 1,
-      width: "100%",
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
@@ -259,12 +250,6 @@ const Settings: React.FC<dark> = ({ onToggleDark }) => {
     setEmail("");
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    history.push("/login");
-  };
-
   return (
     <div className={classes.root}>
       {loading ? (
@@ -279,21 +264,8 @@ const Settings: React.FC<dark> = ({ onToggleDark }) => {
           <Redirect to="/login" />
         </>
       ) : (
-        <Grid container spacing={0} style={{ marginTop: 70 }}>
-          <Grid item xs={2}></Grid>
           <div className={classes.main}>
             <div className={classes.container}>
-              <StyledTabs
-                orientation="vertical"
-                value={value}
-                onChange={handleChange}
-                aria-label="Vertical tabs example"
-                className={classes.tabs}
-              >
-                <StyledTab label="Edit Detials" {...a11yProps(0)} />
-                <StyledTab label="Theme" {...a11yProps(1)} />
-              </StyledTabs>
-              <TabPanel value={value} index={0}>
                 <div className={classes.editDetails}>
                   <div className={classes.fields}>
                     <Typography color="textSecondary">Name: </Typography>
@@ -328,30 +300,9 @@ const Settings: React.FC<dark> = ({ onToggleDark }) => {
                     </IconButton>
                   </div>
                 </div>
-              </TabPanel>
-              <TabPanel value={value} index={1}>
-                <IconButton onClick={onToggleDark}>
-                  {localStorage.getItem("theme") === "light" ? (
-                    <WbSunnyRounded />
-                  ) : (
-                    <NightsStayRounded />
-                  )}
-                </IconButton>
-                {/* <Button variant="outlined" color="primary">D/L</Button> */}
-              </TabPanel>
             </div>
-            <Button
-              className={classes.buttons}
-              variant="outlined"
-              onClick={logout}
-            >
-              logout
-            </Button>
           </div>
-          <Grid item xs={2}></Grid>
-        </Grid>
       )}
-      <br></br>
     </div>
   );
 };

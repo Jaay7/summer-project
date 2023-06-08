@@ -41,22 +41,25 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: "#EF5350",
       },
     },
-    leftContainer: {
+    container: {
       width: "100%",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
+      padding: theme.spacing(2),
+      [theme.breakpoints.down('sm')]: {
+        marginTop: 50,
+      }
     },
     boxes: {
       padding: "10px 20px",
       backdropFilter: "blur(10px)",
       // border: `1px solid ${theme.palette.divider}`,
-      boxShadow: "3px 3px 8px #0000002a",
       borderRadius: 10,
-      width: "80%",
       background: "#AED58110",
       display: "inline-block",
-      marginBottom: "20px",
+      marginBottom: 10,
+      maxWidth: 240
     },
   })
 );
@@ -110,15 +113,13 @@ const Profile: React.FC = () => {
           <Redirect to="/login" />
         </>
       ) : (
-        <Grid container spacing={0}>
-          <Grid item xs={12} md={8}>
-            <div className={classes.leftContainer}>
+            <div className={classes.container}>
               {/* <Avatar src={`${data.profile.profilePic}`} alt={data.profile.username} style={{height: 150, width: 150, borderRadius: "50%", objectFit: "cover"}} /> */}
               <Typography gutterBottom variant="h6" color="textPrimary">
                 My Profile
               </Typography>
               <span style={{ flexGrow: 0.2 }}></span>
-              <Card elevation={4} variant="elevation" className={classes.boxes}>
+              <Card variant="outlined" className={classes.boxes}>
                 <Typography variant="body2" color="textPrimary">
                   Name
                 </Typography>
@@ -126,7 +127,7 @@ const Profile: React.FC = () => {
                   {data.profile.name}
                 </Typography>
               </Card>
-              <Card elevation={4} variant="elevation" className={classes.boxes}>
+              <Card variant="outlined" className={classes.boxes}>
                 <Typography variant="body2" color="textPrimary">
                   Username
                 </Typography>
@@ -134,7 +135,7 @@ const Profile: React.FC = () => {
                   {data.profile.username}
                 </Typography>
               </Card>
-              <Card elevation={4} variant="elevation" className={classes.boxes}>
+              <Card variant="outlined" className={classes.boxes}>
                 <Typography variant="body2" color="textPrimary">
                   Email
                 </Typography>
@@ -143,8 +144,6 @@ const Profile: React.FC = () => {
                 </Typography>
               </Card>
             </div>
-          </Grid>
-        </Grid>
       )}
     </div>
   );

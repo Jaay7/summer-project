@@ -12,19 +12,24 @@ import {
   ListItemText,
   Toolbar,
   Typography,
+  ListItemSecondaryAction,
+  ListItemAvatar,
+  Avatar,
 } from "@material-ui/core";
 import {
   makeStyles,
   createStyles,
   Theme,
   useTheme,
+  withStyles,
 } from "@material-ui/core/styles";
 import {
   useLocation,
   NavLink,
   BrowserRouter,
-  Switch,
+  Switch as DSwitch,
   Route,
+  Redirect,
 } from "react-router-dom";
 import {
   InboxRounded,
@@ -32,6 +37,9 @@ import {
   PersonOutline,
   SearchRounded,
   SettingsRounded,
+  ExitToAppRounded,
+  WbSunnyRounded,
+  NightsStayRounded
 } from "@material-ui/icons";
 import MenuIcon from "@material-ui/icons/Menu";
 import Profile from "./Profile";
@@ -42,8 +50,10 @@ import Settings from "./Settings";
 import GroupMsgBox from "./GroupMsgBox";
 import Home from "./Home";
 import { useHistory } from "react-router";
+import Switch, { SwitchClassKey, SwitchProps } from "@material-ui/core/Switch";
+import { useQuery, gql } from "@apollo/client";
 
-const drawerWidth = 240;
+const drawerWidth = 270;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -59,6 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: drawerWidth,
       [theme.breakpoints.up("sm")]: {
         width: `calc(100% - ${drawerWidth}px)`,
+        display: "none",
       },
       backgroundColor: "transparent",
       boxShadow: "none",
@@ -69,6 +80,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("sm")]: {
         display: "none",
       },
+      position: "absolute",
+      top: 10,
+      left: 10,
     },
     toolbar: {
       ...theme.mixins.toolbar,
@@ -76,13 +90,18 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
     },
+    toolbar2: {
+      [theme.breakpoints.up("sm")]: {
+        display: "none",
+      },
+    },
     drawerPaper: {
       width: drawerWidth,
-      border: "none",
+      borderRight: `1px solid ${theme.palette.divider}`,
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(2),
+      // padding: theme.spacing(2),
     },
     listS: {
       padding: 8,
@@ -101,6 +120,12 @@ const useStyles = makeStyles((theme: Theme) =>
         cursor: "pointer",
         borderRadius: 8,
       },
+    },
+    listST: {
+      // backgroundColor: theme.palette.background.default,
+      cursor: "pointer",
+      height: 70,
+      borderRadius: 8,
     },
     link: {
       color: theme.palette.text.secondary,
@@ -134,21 +159,115 @@ interface Dark {
   onToggleDark: any;
 }
 
+interface Styles extends Partial<Record<SwitchClassKey, string>> {
+  focusVisible?: string;
+}
+
+interface Props extends SwitchProps {
+  classes: Styles;
+}
+
+const IOSSwitch = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: 42,
+      height: 26,
+      padding: 0,
+      margin: theme.spacing(1),
+    },
+    switchBase: {
+      padding: 1,
+      "&$checked": {
+        transform: "translateX(16px)",
+        color: theme.palette.background.default,
+        "& + $track": {
+          backgroundColor: "#4527A0",
+          opacity: 1,
+          border: "none",
+        },
+      },
+      "&$focusVisible $thumb": {
+        color: "#4527A0",
+        border: "6px solid #fff",
+      },
+    },
+    thumb: {
+      width: 24,
+      height: 24,
+    },
+    track: {
+      borderRadius: 26 / 2,
+      border: `1px solid ${theme.palette.grey[400]}`,
+      backgroundColor: theme.palette.grey[50],
+      opacity: 1,
+      transition: theme.transitions.create(["background-color", "border"]),
+    },
+    checked: {},
+    focusVisible: {},
+  })
+)(({ classes, ...props }: Props) => {
+  return (
+    <Switch
+      focusVisibleClassName={classes.focusVisible}
+      disableRipple
+      classes={{
+        root: classes.root,
+        switchBase: classes.switchBase,
+        thumb: classes.thumb,
+        track: classes.track,
+        checked: classes.checked,
+      }}
+      {...props}
+    />
+  );
+});
+
+const USER_DATA = gql`
+  query UserProfile {
+    profile {
+      id
+      name
+      email
+      username
+    }
+  }
+`;
+
 const Header: React.FC<Dark> = ({ onToggleDark }) => {
   const classes = useStyles();
   const theme = useTheme();
   const location = useLocation();
   const history = useHistory();
-  const matches = theme.breakpoints.down("xs");
+  const matches = theme.breakpoints.up("sm");
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [checked, isChecked] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
+  const handleChangeSwitch = () => {
+    isChecked(!checked);
+  };
+
   const activeRoute = (routeName: any) => {
     return location.pathname === routeName ? true : false;
+  };
+
+  const { loading, error, data } = useQuery(USER_DATA, {
+    context: {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    },
+    pollInterval: 500,
+  });
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    history.push("/login");
   };
 
   const drawer = (
@@ -182,15 +301,6 @@ const Header: React.FC<Dark> = ({ onToggleDark }) => {
           <ListItemText primary={"Inbox"} />
         </ListItem>
         <ListItem
-          selected={activeRoute("/profile")}
-          onClick={() => history.push("/profile")}
-        >
-          <ListItemIcon>
-            <PersonOutline />
-          </ListItemIcon>
-          <ListItemText primary={"Profile"} />
-        </ListItem>
-        <ListItem
           selected={activeRoute("/settings")}
           onClick={() => history.push("/settings")}
         >
@@ -200,25 +310,78 @@ const Header: React.FC<Dark> = ({ onToggleDark }) => {
           <ListItemText primary={"Settings"} />
         </ListItem>
       </List>
+      <List
+        style={{
+          position: "fixed",
+          bottom: 10,
+          width: drawerWidth,
+          padding: 8,
+        }}
+      >
+        <Divider component="li" />
+        {loading ? (
+          <Typography variant="body2">Loading...</Typography>
+        ) : error ? (
+          <Typography variant="body2">
+            {error.message}
+            <Redirect to={"/login"} />
+          </Typography>
+        ) : (
+          <>
+            <ListItem
+              className={classes.listST}
+              // selected={activeRoute("/profile")}
+              onClick={() => history.push("/profile")}
+            >
+              <ListItemAvatar>
+                <Avatar>{data.profile.username.charAt(0).toUpperCase()}</Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={data.profile.username}
+                secondary={data.profile.email}
+              />
+            </ListItem>
+            <ListItem style={{ cursor: "pointer" }} onClick={logout}>
+              <ListItemIcon>
+                <ExitToAppRounded />
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} />
+            </ListItem>
+          </>
+        )}
+        <Divider component="li" />
+        <ListItem>
+          <ListItemText primary={"Theme"} />
+          <ListItemSecondaryAction>
+            <IconButton onClick={onToggleDark}>
+              {localStorage.getItem("theme") === "light" ? (
+                <WbSunnyRounded />
+              ) : (
+                <NightsStayRounded />
+              )}
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      </List>
     </div>
   );
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        edge="start"
+        onClick={handleDrawerToggle}
+        className={classes.menuButton}
+      >
+        <MenuIcon />
+      </IconButton>
+      {/* <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       {/* <BrowserRouter> */}
       <nav className={classes.drawer} aria-label="mailbox folders">
         <Hidden smUp implementation="css">
@@ -250,9 +413,9 @@ const Header: React.FC<Dark> = ({ onToggleDark }) => {
         </Hidden>
       </nav>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
+        <div className={classes.toolbar2} />
         <Route path="/">
-          <Switch>
+          <DSwitch>
             <Route exact path="/" component={Search} />
             <Route exact path="/inbox/">
               <Inbox />
@@ -269,7 +432,7 @@ const Header: React.FC<Dark> = ({ onToggleDark }) => {
             <Route exact path="/settings">
               <Settings onToggleDark={onToggleDark} />
             </Route>
-          </Switch>
+          </DSwitch>
         </Route>
       </main>
       {/* </BrowserRouter>*/}
