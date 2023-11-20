@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
+import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 
 const USER_LOGIN = gql`
   mutation LoginUser($username: String!, $password: String!) {
@@ -21,6 +22,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [viewPassword, setViewPassword] = React.useState(false);
   const [LoginUser, { error, loading, data }] = useMutation(USER_LOGIN);
 
   const onSubmit = async () => {
@@ -74,7 +76,7 @@ const Login = () => {
                 autoComplete="username"
                 required
                 onChange={(e) => setUsername(e.target.value)}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
               />
             </div>
           </div>
@@ -96,16 +98,22 @@ const Login = () => {
                 </a>
               </div>
             </div>
-            <div className="mt-2">
+            <div className="relative mt-2">
               <input
                 id="password"
                 name="password"
-                type="password"
+                type={viewPassword ? "text" : "password"}
                 autoComplete="current-password"
                 required
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
               />
+              <div
+                className="absolute inset-y-0 right-0 flex items-center transition-all duration-75 pr-2 cursor-pointer"
+                onClick={() => setViewPassword(!viewPassword)}
+              >
+                {viewPassword ? <RxEyeOpen /> : <RxEyeClosed />}
+              </div>
             </div>
           </div>
 

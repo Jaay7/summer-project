@@ -2,7 +2,9 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
+import ChatContainer from "./components/ChatContainer";
 import Dashboard from "./components/Dashboard";
+import GroupChat from "./components/GroupChat";
 import Inbox from "./components/Inbox";
 import NotFound from "./components/NotFound";
 import OthersProfile from "./components/OthersProfile";
@@ -37,7 +39,7 @@ function App() {
               path="/inbox"
               element={<Inbox toggle={() => setOpenSideNav(!openSideNav)} />}
             >
-              <Route path=":person" element={<PersonalChat />} />
+              <Route path=":person" element={<ChatContainer />} />
             </Route>
             <Route
               path="/user/:id"

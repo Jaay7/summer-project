@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { IoMenu } from "react-icons/io5";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 
 const OTHER_USER = gql`
   query OtherUser($username: String!) {

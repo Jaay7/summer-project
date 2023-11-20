@@ -31,7 +31,7 @@ const Header = (props) => {
     >
       <div className="w-[300px] py-8 px-4 flex flex-col bg-indigo-600 h-full lg:w-full shadow-xl relative">
         <h1 className="self-center text-2xl font-semibold">bericht</h1>
-        <div className="mt-12 flex flex-col space-y-2">
+        <div className="mt-8 flex flex-col space-y-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
@@ -64,7 +64,7 @@ const Dashboard = (props) => {
   return (
     <div className="grid grid-cols-1 lg:mx-0 lg:grid-cols-10 h-screen">
       <Header isOpen={props.isOpen} toggle={props.toggle} />
-      <div className="col-span-8 h-full overflow-auto">
+      <div className="col-span-8 h-screen">
         <Outlet />
       </div>
     </div>
