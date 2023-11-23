@@ -148,6 +148,11 @@ const Login = () => {
             Sign up
           </Link>
         </p>
+        <div className="mt-10 text-sm">
+          <p className="underline font-medium text-gray-700">Demo account</p>
+          <p className="mt-2 text-gray-500">Username: viteconfig</p>
+          <p className="text-gray-500">Password: Dalll@1234</p>
+        </div>
       </div>
     </div>
   );
