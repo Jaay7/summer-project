@@ -34,6 +34,7 @@
   background-size: cover;
   background-position: top; */
   /* background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%); */
-  background-image: linear-gradient(to top, #fdfbfb 0%, #f2f3f4 100%);
+  /* background-image: linear-gradient(to top, #fdfbfb 0%, #f2f3f4 100%); */
+  background-color: #fbfbfb;
   /* background-image: linear-gradient(to bottom, #dfe9f3 0%, white 100%); */
 }

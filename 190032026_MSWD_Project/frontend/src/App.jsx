@@ -4,11 +4,9 @@ import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import ChatContainer from "./components/ChatContainer";
 import Dashboard from "./components/Dashboard";
-import GroupChat from "./components/GroupChat";
 import Inbox from "./components/Inbox";
 import NotFound from "./components/NotFound";
 import OthersProfile from "./components/OthersProfile";
-import PersonalChat from "./components/PersonalChat";
 import Profile from "./components/Profile";
 import Search from "./components/Search";
 

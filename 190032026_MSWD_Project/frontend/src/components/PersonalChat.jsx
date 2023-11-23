@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { IoSendOutline } from "react-icons/io5";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const RET_MSGS = gql`
   query RetrieveMessages($currentUser: String!, $otherUser: String!) {
@@ -101,9 +102,9 @@ const PersonalChat = () => {
       </div>
       <div className="grow h-[82vh] py-4 px-2 rounded-t-2xl overflow-y-auto noscrollbar">
         {loading ? (
-          <>
-            <p>Loading...</p>
-          </>
+          <div className="h-full flex items-center justify-center">
+            <AiOutlineLoading3Quarters className="animate-spin text-xl font-semibold mt-6" />
+          </div>
         ) : error ? (
           <p>{error}</p>
         ) : data.retrieveMessages.length === 0 ? (
@@ -116,7 +117,7 @@ const PersonalChat = () => {
               index.sender === currentUser ? (
                 <div
                   key={index._id}
-                  className="py-2 px-3 bg-indigo-100/70 rounded-xl flex self-end m-1 w-max-3/5 relative break-all"
+                  className="py-2 px-3 bg-slate-100/70 rounded-xl flex self-end m-1 w-max-3/5 relative break-all"
                 >
                   <span>{index.message}</span>
                   <span className="absolute -left-14 w-12 top-3 truncate text-xs text-gray-500 font-medium">
@@ -149,7 +150,7 @@ const PersonalChat = () => {
           className="w-full md:w-[80%] outline-0 h-12 px-3 rounded-l-lg shadow-sm"
         />
         <button
-          className="h-12 px-3 rounded-r-lg self-center bg-indigo-600 text-white text-xl font-medium shadow-sm outline-0"
+          className="h-12 px-3 rounded-r-lg self-center bg-slate-700 text-white text-xl font-medium shadow-sm outline-0"
           onClick={onSend}
         >
           <IoSendOutline />

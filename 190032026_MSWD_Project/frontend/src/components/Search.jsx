@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import { IoSearch, IoMenu } from "react-icons/io5";
 import { GoArrowUpRight } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const SEARCH_USERS = gql`
   query SearchUser($letter: String!) {
@@ -43,13 +44,16 @@ const Search = (props) => {
       <div className="p-10">
         {loading ? (
           <div className="flex justify-center">
-            <p>Loading...</p>
+            <AiOutlineLoading3Quarters className="animate-spin text-xl font-semibold mt-6" />
           </div>
         ) : error ? (
           <>{error.message}</>
         ) : searchInput === "" ? (
           <div className="flex items-center justify-center h-full">
-            <p>search for users</p>
+            <p className="text-gray-500 italic max-w-md text-center">
+              "From 'Who's this?' to 'Can't imagine life without you.' Cheers to
+              new friends!"
+            </p>
           </div>
         ) : data.searchUser.length === 0 ? (
           <div className="flex flex-col justify-center items-center">
@@ -65,18 +69,18 @@ const Search = (props) => {
               .map((person) => (
                 <li
                   key={person.username}
-                  className="group relative flex justify-between px-6 py-5 overflow-hidden rounded-md shadow-sm cursor-pointer"
+                  className="group relative flex justify-between px-6 py-3 overflow-hidden cursor-pointer"
                   onClick={() => navigate(`/user/${person.username}`)}
                 >
                   <div className="absolute right-0 top-0 h-full p-3 flex items-center justify-center text-indigo-950 font-medium text-xl">
                     <GoArrowUpRight className="group-hover:translate-x-1 group-hover:-translate-y-1 ease-linear duration-100" />
                   </div>
                   <div className="flex min-w-0 gap-x-4">
-                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-50 ring-2 ring-white text-xl font-medium text-gray-500">
+                    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-50 ring-2 ring-white text-xl font-medium text-gray-500 group-hover:bg-orange-50 group-hover:text-orange-500">
                       {person.username.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-auto">
-                      <p className="text-sm font-semibold leading-6 text-gray-900 group-hover:text-indigo-600">
+                      <p className="text-sm font-semibold leading-6 text-gray-900 group-hover:text-orange-500">
                         {person.username}
                       </p>
                       <p className="mt-1 truncate text-xs leading-5 text-gray-500">

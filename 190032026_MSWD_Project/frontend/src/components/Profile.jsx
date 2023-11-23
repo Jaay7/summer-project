@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery, gql } from "@apollo/client";
 import { IoMenu } from "react-icons/io5";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const USER_DATA = gql`
   query UserProfile {
@@ -41,7 +42,7 @@ const Profile = (props) => {
       <div className="mt-6 border-t border-gray-100">
         {loading ? (
           <div className="flex justify-center items-center h-full">
-            <p>Loading...</p>
+            <AiOutlineLoading3Quarters className="animate-spin text-xl font-semibold mt-6" />
           </div>
         ) : error ? (
           <p>{error.message}</p>

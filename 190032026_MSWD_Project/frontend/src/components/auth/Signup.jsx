@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const USER_REGISTER = gql`
   mutation RegisterUser(
@@ -66,6 +67,11 @@ const Signup = () => {
         // });
       });
   };
+
+  if (localStorage.getItem("token") && localStorage.getItem("token") !== "") {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -90,7 +96,7 @@ const Signup = () => {
                 type="text"
                 required
                 onChange={(e) => setName(e.target.value)}
-                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 outline-0"
               />
             </div>
           </div>
@@ -109,7 +115,7 @@ const Signup = () => {
                 type="text"
                 required
                 onChange={(e) => setUsername(e.target.value)}
-                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 outline-0"
               />
             </div>
           </div>
@@ -129,7 +135,7 @@ const Signup = () => {
                 autoComplete="email"
                 required
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 outline-0"
               />
             </div>
           </div>
@@ -151,7 +157,7 @@ const Signup = () => {
                 autoComplete="current-password"
                 required
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 outline-0"
+                className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-slate-600 sm:text-sm sm:leading-6 outline-0"
               />
             </div>
           </div>
@@ -161,9 +167,13 @@ const Signup = () => {
               type="submit"
               disabled={!name && !username && !email && !password}
               onClick={onSubmit}
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-md bg-slate-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600"
             >
-              {loading ? "Loading..." : "Sign up"}
+              {loading ? (
+                <AiOutlineLoading3Quarters className="animate-spin text-xl font-bold" />
+              ) : (
+                "Sign up"
+              )}
             </button>
           </div>
         </div>
@@ -172,7 +182,7 @@ const Signup = () => {
           Already have an account?{" "}
           <Link
             to={"/login"}
-            className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+            className="font-semibold leading-6 text-slate-600 hover:text-slate-500"
           >
             Login
           </Link>
