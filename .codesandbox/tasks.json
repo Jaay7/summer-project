@@ -4,13 +4,13 @@
 
   // These tasks can be run from CodeSandbox. Running one will open a log in the app.
   "tasks": {
-    "cd 190032026_MSWD_Project/frontend && yarn start": {
-      "name": "cd 190032026_MSWD_Project/frontend && yarn start",
-      "command": "cd 190032026_MSWD_Project/frontend && yarn start",
-      "runAtStart": true,
-      "preview": {
-        "port": 3101
-      }
-    }
+    // "cd 190032026_MSWD_Project/frontend && yarn start": {
+    //   "name": "cd 190032026_MSWD_Project/frontend && yarn start",
+    //   "command": "cd 190032026_MSWD_Project/frontend && yarn start",
+    //   "runAtStart": true,
+    //   "preview": {
+    //     "port": 3101
+    //   }
+    // }
   }
 }

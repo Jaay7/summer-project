@@ -1,35 +1,40 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-/* width */
-::-webkit-scrollbar {
+.scrollbar::-webkit-scrollbar {
   width: 10px;
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f100;
-  width: 10px 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #c4c4c4; 
-  border-radius: 20px;
+.scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #c4c4c4ab; 
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #b9b9b9;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #818181;
+}
+
+.noscrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.noscrollbar {
+  /* background-image: url("https://images.unsplash.com/photo-1610122299048-8ea105316c89?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: top; */
+  /* background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%); */
+  /* background-image: linear-gradient(to top, #fdfbfb 0%, #f2f3f4 100%); */
+  background-color: #fbfbfb;
+  /* background-image: linear-gradient(to bottom, #dfe9f3 0%, white 100%); */
 }
