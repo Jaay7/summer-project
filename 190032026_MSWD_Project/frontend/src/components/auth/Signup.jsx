@@ -2,6 +2,7 @@ import React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import NotificationBox from "../utils/NotificationBox";
 
 const USER_REGISTER = gql`
   mutation RegisterUser(
@@ -35,6 +36,13 @@ const Signup = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const [notification, setNotification] = React.useState({
+    open: false,
+    for: "",
+    title: "",
+    description: "",
+  });
+
   const [RegisterUser, { error, loading, data }] = useMutation(USER_REGISTER);
   const onSubmit = async () => {
     await RegisterUser({
@@ -51,29 +59,44 @@ const Signup = () => {
         let username = res.data.register.user.username;
         localStorage.setItem("token", token);
         localStorage.setItem("user", username);
-        // setState({
-        //   open: true,
-        //   Transition: SlideTransition,
-        //   message: "Signed up successfully!",
-        // });
+        setNotification({
+          open: true,
+          for: "success",
+          title: "Signup successful!",
+          description: "You will be redirected to home page.",
+        });
         navigate("/");
       })
       .catch((err) => {
-        console.log(error);
-        // setState({
-        //   open: true,
-        //   Transition: SlideTransition,
-        //   message: err.message,
-        // });
+        // console.log(err);
+        setNotification({
+          open: true,
+          for: "fail",
+          title: "Signup failed!",
+          description: err.message,
+        });
       });
   };
+
+  React.useEffect(() => {
+    if (notification.open) {
+      setTimeout(() => {
+        setNotification({
+          open: false,
+          for: "",
+          title: "",
+          description: "",
+        });
+      }, 2500);
+    }
+  }, [notification]);
 
   if (localStorage.getItem("token") && localStorage.getItem("token") !== "") {
     return <Navigate to="/" />;
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex relative min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Signup here
@@ -188,6 +211,7 @@ const Signup = () => {
           </Link>
         </p>
       </div>
+      <NotificationBox notification={notification} />
     </div>
   );
 };

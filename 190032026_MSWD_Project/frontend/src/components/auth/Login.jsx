@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
 import { RxEyeClosed, RxEyeOpen } from "react-icons/rx";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import NotificationBox from "../utils/NotificationBox";
 
 const USER_LOGIN = gql`
   mutation LoginUser($username: String!, $password: String!) {
@@ -24,6 +25,14 @@ const Login = () => {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [viewPassword, setViewPassword] = React.useState(false);
+
+  const [notification, setNotification] = React.useState({
+    open: false,
+    for: "",
+    title: "",
+    description: "",
+  });
+
   const [LoginUser, { error, loading, data }] = useMutation(USER_LOGIN);
 
   const onSubmit = async () => {
@@ -36,29 +45,44 @@ const Login = () => {
         let username = response.data.login.user.username;
         localStorage.setItem("token", token);
         localStorage.setItem("user", username);
-        // setState({
-        //   open: true,
-        //   Transition: SlideTransition,
-        //   message: "Login success!",
-        // });
+        setNotification({
+          open: true,
+          for: "success",
+          title: "Login successful!",
+          description: "You will be redirected to home page.",
+        });
         navigate("/");
       })
       .catch((error) => {
-        console.log(error);
-        // setState({
-        //   open: true,
-        //   Transition: SlideTransition,
-        //   message: error.message,
-        // });
+        // console.log(error);
+        setNotification({
+          open: true,
+          for: "fail",
+          title: "Login failed!",
+          description: error.message,
+        });
       });
   };
+
+  React.useEffect(() => {
+    if (notification.open) {
+      setTimeout(() => {
+        setNotification({
+          open: false,
+          for: "",
+          title: "",
+          description: "",
+        });
+      }, 2500);
+    }
+  }, [notification]);
 
   if (localStorage.getItem("token") && localStorage.getItem("token") !== "") {
     return <Navigate to="/" />;
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex relative min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
           Login to your account
@@ -154,6 +178,7 @@ const Login = () => {
           <p className="text-gray-500">Password: Dalll@1234</p>
         </div>
       </div>
+      <NotificationBox notification={notification} />
     </div>
   );
 };

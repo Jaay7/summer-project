@@ -13,6 +13,7 @@ import {
   IoClose,
 } from "react-icons/io5";
 import { HiOutlineInbox, HiLogout } from "react-icons/hi";
+import NotificationBox from "./utils/NotificationBox";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -29,15 +30,43 @@ const Header = (props) => {
   let location = useLocation();
   const navigate = useNavigate();
 
+  const [notification, setNotification] = React.useState({
+    open: false,
+    for: "",
+    title: "",
+    description: "",
+  });
+
   const onLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/login");
+    setNotification({
+      open: true,
+      for: "success",
+      title: "Logged out successfully!",
+      description: "You will be redirected to login page.",
+    });
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
   };
+
+  React.useEffect(() => {
+    if (notification.open) {
+      setTimeout(() => {
+        setNotification({
+          open: false,
+          for: "",
+          title: "",
+          description: "",
+        });
+      }, 1500);
+    }
+  }, [notification]);
 
   return (
     <div
-      className={`fixed h-full z-50 lg:relative w-full lg:col-span-2 text-white  lg:flex flex-col ${
+      className={`fixed h-full z-40 lg:relative w-full lg:col-span-2 text-white  lg:flex flex-col ${
         props.isOpen ? "flex bg-gray-500/70 transition-opacity" : "hidden"
       }`}
     >
@@ -79,6 +108,7 @@ const Header = (props) => {
           <IoClose className="text-2xl" onClick={props.toggle} />
         </div>
       </div>
+      <NotificationBox notification={notification} />
     </div>
   );
 };

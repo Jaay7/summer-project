@@ -38,3 +38,16 @@
   background-color: #fbfbfb;
   /* background-image: linear-gradient(to bottom, #dfe9f3 0%, white 100%); */
 }
+
+.animate-notification {
+  animation: notification 250ms ease-in-out;
+}
+
+@keyframes notification {
+  from {
+    transform: translateX(300px);
+  }
+  to {
+    transform: translateX(0px);
+  }
+}
